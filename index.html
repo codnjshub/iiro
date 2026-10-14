@@ -234,7 +234,7 @@
             <!-- TITLE SCREEN -->
             <section id="title-screen" onclick="scrollToFirstProject()">
                 <div class="text-center space-y-8 px-4">
-                    <h1 class="text-sm md:text-base font-light tracking-[0.25em] text-neutral-800 uppercase" data-editable="true">
+                    <h1 class="text-sm md:text-base font-light tracking-[0.25em] text-neutral-800 uppercase" data-editable="true" contenteditable="false" id="title-screen-text" onblur="updateTitleScreenText(this.innerText)">
                         신뢰할 수 있는 건축 경험을 제공해드립니다.
                     </h1>
                     <div class="flex justify-center pt-2">
@@ -337,6 +337,7 @@
             }
         ];
         let currentAdminPassword = localStorage.getItem('iiro_admin_pass') || '1234';
+        let titleScreenMessage = localStorage.getItem('iiro_title_text') || '신뢰할 수 있는 건축 경험을 제공해드립니다.';
         let isAdmin = false;
         let isPreviewMode = false;
         const projectIndices = {};
@@ -348,6 +349,12 @@
             
             container.innerHTML = '';
             if (titleScreen) {
+                const titleTextEl = titleScreen.querySelector('#title-screen-text');
+                if (titleTextEl) {
+                    titleTextEl.innerText = titleScreenMessage;
+                    const isEditing = isAdmin && !isPreviewMode;
+                    titleTextEl.setAttribute('contenteditable', isEditing ? 'true' : 'false');
+                }
                 container.appendChild(titleScreen);
             }
 
@@ -588,6 +595,11 @@
             }
         }
 
+        function updateTitleScreenText(value) {
+            titleScreenMessage = value.trim();
+            localStorage.setItem('iiro_title_text', titleScreenMessage);
+        }
+
         function addNewProject() {
             const newId = 'proj-' + Date.now();
             projectsData.push({
@@ -689,51 +701,20 @@
         }
 
         function scrollToFirstProject() {
-            const titleScreen = document.getElementById('title-screen');
-            if (titleScreen && titleScreen.nextElementSibling) {
-                titleScreen.nextElementSibling.scrollIntoView({ behavior: 'smooth' });
+            const container = document.getElementById('projects-list-container');
+            const firstProject = container.querySelector('.snap-section:not(#title-screen)');
+            if (firstProject) {
+                firstProject.scrollIntoView({ behavior: 'smooth' });
             }
         }
 
-        function openExportModal() {
-            const fullHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
-            document.getElementById('export-code-area').value = fullHtml;
-            document.getElementById('export-modal').classList.remove('hidden');
-        }
-
-        function closeExportModal() {
-            document.getElementById('export-modal').classList.add('hidden');
-        }
-
-        function copyExportCode() {
-            const textarea = document.getElementById('export-code-area');
-            textarea.select();
-            document.execCommand('copy');
-            alert('전체 코드가 클립보드에 복사되었습니다!');
-        }
-
-        const openAboutBtn = document.getElementById('open-about-btn');
-        if (openAboutBtn) {
-            openAboutBtn.addEventListener('click', () => {
-                const modal = document.getElementById('about-modal');
-                if (modal) {
-                    modal.classList.remove('hidden');
-                    setTimeout(() => {
-                        modal.classList.remove('opacity-0', 'pointer-events-none');
-                    }, 10);
-                }
-            });
-        }
-
-        const closeAboutBtn = document.getElementById('close-about-btn');
-        if (closeAboutBtn) {
-            closeAboutBtn.addEventListener('click', () => {
-                const modal = document.getElementById('about-modal');
-                if (modal) {
-                    modal.classList.add('opacity-0', 'pointer-events-none');
-                    setTimeout(() => {
-                        modal.classList.add('hidden');
-                    }, 300);
+        const titleScreen = document.getElementById('title-screen');
+        if (titleScreen) {
+            titleScreen.addEventListener('click', (e) => {
+                if (isAdmin && !isPreviewMode) {
+                    if (e.target.id === 'title-screen-text') {
+                        e.stopPropagation();
+                    }
                 }
             });
         }
@@ -743,3 +724,4 @@
         };
     </script>
 </body>
+</html>
