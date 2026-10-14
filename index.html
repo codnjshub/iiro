@@ -205,7 +205,7 @@
             <nav class="flex items-center gap-8 text-[10px] font-light tracking-wider text-archMuted">
                 <a href="#projects-list-container" class="hover:text-archText transition-colors" data-editable="true">PROJECTS</a>
                 <button id="open-about-btn" class="hover:text-archText transition-colors focus:outline-none uppercase" data-editable="true">ABOUT</button>
-                <a href="#contact" class="hover:text-archText transition-colors" data-editable="true">CONTACT</a>
+                <button id="open-contact-btn" class="hover:text-archText transition-colors focus:outline-none uppercase" data-editable="true">CONTACT</button>
             </nav>
         </div>
     </header>
@@ -217,15 +217,65 @@
         </div>
         <div class="max-w-2xl my-auto space-y-6">
             <h1 class="text-lg md:text-xl font-light tracking-tight leading-relaxed text-archText" data-editable="true">
-                이로건축(IIRO ARCHITECTS)은 공간의 본질에 집중하며, 시간의 흐름 속에서도 가치를 지니는 건축적 언어를 탐구합니다.
+                IIRO ARCHITECTS는 공간의 본질과 구축의 절제를 탐구하는 건축사사무소입니다.
             </h1>
             <p class="text-[11px] font-light leading-relaxed text-archMuted" data-editable="true">
-                우리는 자연과 도시, 그리고 인간의 삶이 교차하는 지점에서 지속 가능한 형태와 구조를 제안합니다. 각각의 프로젝트는 그 장소가 가진 고유의 맥락과 고요한 대화를 통해 완성됩니다.
+                비움과 채움 사이의 완벽한 균형을 모색하며, 오랫동안 온기를 머금는 장소를 만들어냅니다. 우리는 도면과 재료, 빛과 그림자가 이루는 담백한 조화를 중시합니다. 대지가 가진 장소성과 사용자의 삶이 스며드는 지속 가능한 건축 환경을 제안합니다.
             </p>
         </div>
         <div class="flex justify-between items-center text-[10px] font-light text-archMuted border-t border-archLightBorder pt-4">
             <span data-editable="true">EST. 2020 / SEOUL</span>
             <span data-editable="true">ARCHITECTS & URBAN RESEARCHERS</span>
+        </div>
+    </div>
+
+    <!-- CONTACT POPUP MODAL -->
+    <div id="contact-modal" class="fixed inset-0 z-50 bg-white/95 backdrop-blur-md hidden flex flex-col justify-between p-8 md:p-16 lg:p-24 transition-opacity duration-300 opacity-0 pointer-events-none overflow-y-auto">
+        <div class="flex justify-between items-center border-b border-archLightBorder pb-4">
+            <span class="text-[10px] font-light tracking-widest text-archMuted uppercase" data-editable="true">CONTACT & ARCHITECT PROFILE</span>
+            <button id="close-contact-btn" class="text-xs tracking-widest text-archText uppercase hover:opacity-60 transition-opacity focus:outline-none">CLOSE</button>
+        </div>
+        
+        <div class="max-w-3xl mx-auto my-auto py-8 w-full flex flex-col md:flex-row items-center gap-8 md:gap-12">
+            <!-- PORTRAIT / PROFILE IMAGE (3:4 Ratio Container) -->
+            <div class="w-40 md:w-52 aspect-[3/4] flex-shrink-0 bg-neutral-100 rounded border border-neutral-200 overflow-hidden relative group shadow-sm">
+                <img id="contact-profile-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop" alt="Architect Portrait" class="w-full h-full object-cover desaturated-warm-img">
+                <button onclick="changeProfilePhoto()" class="admin-only hidden absolute bottom-2 right-2 bg-neutral-900/80 hover:bg-black text-white text-[9px] px-2 py-1 rounded backdrop-blur">
+                    사진 변경
+                </button>
+            </div>
+
+            <!-- CONTACT DETAILS & INFO -->
+            <div class="space-y-6 flex-grow text-left">
+                <div>
+                    <h2 class="text-sm md:text-base font-normal tracking-wide text-archText" data-editable="true">이일호 / 대표 건축사 (Principal Architect)</h2>
+                    <p class="text-[10px] font-light text-archMuted tracking-wider mt-0.5" data-editable="true">KIRA Registered Architect / KOREA</p>
+                </div>
+
+                <div class="border-t border-archLightBorder pt-4 space-y-3 text-[11px] font-light text-archText">
+                    <div class="flex items-start gap-4">
+                        <span class="text-[9px] text-archMuted uppercase tracking-widest w-16 pt-0.5">PHONE</span>
+                        <span data-editable="true">+82 (0)2 123 4567 / +82 (0)10 9876 5432</span>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <span class="text-[9px] text-archMuted uppercase tracking-widest w-16 pt-0.5">EMAIL</span>
+                        <span data-editable="true">contact@iiro.kr / architect@iiro.kr</span>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <span class="text-[9px] text-archMuted uppercase tracking-widest w-16 pt-0.5">OFFICE</span>
+                        <span data-editable="true">서울특별시 종로구 자하문로 12길 34 (서촌) IIRO ARCHITECTS</span>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <span class="text-[9px] text-archMuted uppercase tracking-widest w-16 pt-0.5">HOURS</span>
+                        <span data-editable="true">MON - FRI : 09:30 - 18:30 (SAT / SUN / HOLIDAY OFF)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-between items-center text-[10px] font-light text-archMuted border-t border-archLightBorder pt-4">
+            <span data-editable="true">IIRO ARCHITECTS</span>
+            <span data-editable="true">WORK WITH US & INQUIRIES</span>
         </div>
     </div>
 
@@ -721,7 +771,63 @@
 
         window.onload = function() {
             renderProjects();
+
+            // About modal handlers
+            const openAboutBtn = document.getElementById('open-about-btn');
+            const closeAboutBtn = document.getElementById('close-about-btn');
+            const aboutModal = document.getElementById('about-modal');
+
+            if (openAboutBtn && aboutModal) {
+                openAboutBtn.addEventListener('click', function(e) {
+                    if (isAdmin && !isPreviewMode) return; // allow inline editing if in admin mode
+                    e.preventDefault();
+                    aboutModal.classList.remove('hidden', 'pointer-events-none', 'opacity-0');
+                    aboutModal.classList.add('opacity-100');
+                });
+            }
+
+            if (closeAboutBtn && aboutModal) {
+                closeAboutBtn.addEventListener('click', function() {
+                    aboutModal.classList.remove('opacity-100');
+                    aboutModal.classList.add('opacity-0', 'pointer-events-none');
+                    setTimeout(() => {
+                        aboutModal.classList.add('hidden');
+                    }, 300);
+                });
+            }
+
+            // Contact modal handlers
+            const openContactBtn = document.getElementById('open-contact-btn');
+            const closeContactBtn = document.getElementById('close-contact-btn');
+            const contactModal = document.getElementById('contact-modal');
+
+            if (openContactBtn && contactModal) {
+                openContactBtn.addEventListener('click', function(e) {
+                    if (isAdmin && !isPreviewMode) return;
+                    e.preventDefault();
+                    contactModal.classList.remove('hidden', 'pointer-events-none', 'opacity-0');
+                    contactModal.classList.add('opacity-100');
+                });
+            }
+
+            if (closeContactBtn && contactModal) {
+                closeContactBtn.addEventListener('click', function() {
+                    contactModal.classList.remove('opacity-100');
+                    contactModal.classList.add('opacity-0', 'pointer-events-none');
+                    setTimeout(() => {
+                        contactModal.classList.add('hidden');
+                    }, 300);
+                });
+            }
         };
+
+        function changeProfilePhoto() {
+            const url = prompt('새 프로필 사진 인터넷 URL을 입력하거나 이미지 주소를 붙여넣으세요:');
+            if (url && url.trim() !== '') {
+                const img = document.getElementById('contact-profile-img');
+                if (img) img.src = url.trim();
+            }
+        }
     </script>
 </body>
 </html>
