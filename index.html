@@ -825,7 +825,31 @@
         }
 
         function saveChanges() {
-            alert('변경 사항이 성공적으로 저장되었습니다!');
+            try {
+                localStorage.setItem('iiro_projects_data', JSON.stringify(projectsData));
+                localStorage.setItem('iiro_title_text', titleScreenMessage);
+                
+                const profileImg = document.getElementById('contact-profile-img');
+                if (profileImg) {
+                    localStorage.setItem('iiro_contact_img', profileImg.src);
+                }
+                
+                alert('변경 사항이 성공적으로 저장되었습니다!');
+            } catch (e) {
+                alert('저장 중 오류가 발생했습니다: ' + e.message);
+            }
+        }
+
+        function logoutAdmin() {
+            isAdmin = false;
+            isPreviewMode = false;
+            
+            document.getElementById('admin-bar').classList.add('hidden');
+            document.getElementById('admin-add-project-bar').classList.add('hidden');
+            document.getElementById('footer-change-pass-btn').classList.add('hidden');
+            
+            renderProjects();
+            alert('로그아웃 되었습니다.');
         }
 
         const titleScreen = document.getElementById('title-screen');
@@ -840,6 +864,22 @@
         }
 
         window.onload = function() {
+            // 저장된 프로젝트 데이터 로드
+            const savedProjects = localStorage.getItem('iiro_projects_data');
+            if (savedProjects) {
+                try {
+                    projectsData = JSON.parse(savedProjects);
+                } catch (e) {
+                    console.error('Failed to load saved projects', e);
+                }
+            }
+
+            const savedContactImg = localStorage.getItem('iiro_contact_img');
+            if (savedContactImg) {
+                const img = document.getElementById('contact-profile-img');
+                if (img) img.src = savedContactImg;
+            }
+
             renderProjects();
 
             // About modal handlers
