@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IIRO ARCHITECTS</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&family=Noto+Sans+KR:wght@200;300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=Noto+Sans+KR:wght@200;300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script>
         tailwind.config = {
@@ -44,7 +43,6 @@
             padding: 0;
         }
 
-        /* Custom subtle scrollbar */
         ::-webkit-scrollbar {
             height: 3px;
             width: 3px;
@@ -64,7 +62,7 @@
 
         @keyframes fadeInOut {
             0% { opacity: 1; pointer-events: auto; }
-            85% { opacity: 1; }
+            70% { opacity: 1; pointer-events: auto; }
             100% { opacity: 0; pointer-events: none; }
         }
 
@@ -74,11 +72,11 @@
             animation: drawLine 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
+        /* 페이드 아웃 효과를 3.2초 -> 4.5초로 늘리고 비선형 타임 슬라이드로 더 느리고 부드럽게 전환 */
         .intro-overlay {
-            animation: fadeInOut 3.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: fadeInOut 4.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
 
-        /* Warm, low-saturation photo filter */
         .desaturated-warm-img {
             filter: contrast(95%) brightness(98%) sepia(8%) saturate(68%);
             transition: filter 0.6s ease;
@@ -88,11 +86,9 @@
             filter: contrast(100%) brightness(100%) sepia(0%) saturate(100%);
         }
 
-        /* Fluid Centered Sections */
         .snap-section {
             width: 100vw;
             height: 100vh;
-            height: 100dvh;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -100,32 +96,92 @@
             position: relative;
             box-sizing: border-box;
             background-color: #FFFFFF;
-            scroll-margin-top: 0px;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        #hero-title-section {
-            transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-            will-change: opacity, transform;
-            z-index: 30;
-        }
-
-        #hero-title-section.hero-hidden {
-            opacity: 0;
-            pointer-events: none;
-            transform: translateY(-40px);
-        }
-
-        /* Draggable carousel styling */
-        .carousel-container {
-            cursor: grab;
+        #title-screen {
+            width: 100vw;
+            height: 100vh;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            position: relative;
+            cursor: pointer;
             user-select: none;
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
         }
-        .carousel-container:active {
-            cursor: grabbing;
+
+        #projects-list-container {
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+            height: 100vh;
+            width: 100vw;
+            scroll-behavior: smooth;
+        }
+
+        .admin-editing [data-editable="true"] {
+            outline: 1px dashed #0284c7;
+            outline-offset: 3px;
+            transition: all 0.2s ease-in-out;
+            cursor: text;
+        }
+        
+        .admin-editing [data-editable="true"]:hover {
+            background-color: rgba(14, 165, 233, 0.06);
+        }
+
+        .admin-editing [data-editable="true"]:focus {
+            outline: 2px solid #0284c7;
+            background-color: rgba(14, 165, 233, 0.1);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body class="bg-archBg text-archText antialiased selection:bg-neutral-200">
+
+    <div id="admin-bar" class="hidden fixed top-0 left-0 right-0 z-50 bg-neutral-900 text-white shadow-2xl border-b border-neutral-800 fade-in">
+        <div class="max-w-7xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div class="flex items-center gap-2">
+                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                    <i class="fa-solid fa-user-shield mr-1.5"></i> 관리자 수정 모드 ON
+                </span>
+                <span class="hidden md:inline text-neutral-400 text-[11px]">| 텍스트 클릭 수정 / 오른쪽 전용 패널에서 이미지 업로드, 삭제, 순서 변경</span>
+            </div>
+
+            <div class="flex items-center gap-2 text-xs">
+                <button onclick="addNewProject()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-medium rounded transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-plus"></i> 새 프로젝트 추가
+                </button>
+                <button onclick="togglePreviewMode()" id="btn-preview-toggle" class="px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 rounded transition border border-neutral-700 flex items-center gap-1.5">
+                    <i class="fa-solid fa-eye"></i> <span id="preview-text">미리보기</span>
+                </button>
+                <button onclick="saveChanges()" class="px-3.5 py-1.5 bg-sky-600 hover:bg-sky-500 text-white font-medium rounded transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-floppy-disk"></i> 저장하기
+                </button>
+                <button onclick="openExportModal()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-code"></i> GitHub 코드 내보내기
+                </button>
+                <button onclick="logoutAdmin()" class="px-3 py-1.5 bg-rose-950/60 hover:bg-rose-900 text-rose-300 rounded transition border border-rose-800/50 flex items-center gap-1.5">
+                    <i class="fa-solid fa-right-from-bracket"></i> 로그아웃
+                </button>
+            </div>
+        </div>
+    </div>
 
     <div id="intro-splash" class="intro-overlay fixed inset-0 z-50 bg-white flex flex-col items-center justify-center pointer-events-auto">
         <div class="w-48 h-48 relative flex items-center justify-center">
@@ -145,585 +201,545 @@
 
     <header class="fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-sm border-b border-archLightBorder">
         <div class="px-8 md:px-20 lg:px-28 py-4 flex items-center justify-between">
-            <a href="#" class="text-[11px] font-normal tracking-[0.2em] text-archText uppercase">IIRO ARCHITECTS</a>
+            <a href="#" class="text-[11px] font-normal tracking-[0.2em] text-archText uppercase" data-editable="true">IIRO ARCHITECTS</a>
             <nav class="flex items-center gap-8 text-[10px] font-light tracking-wider text-archMuted">
-                <a href="#projects" class="hover:text-archText transition-colors">PROJECTS</a>
-                <button id="open-about-btn" class="hover:text-archText transition-colors focus:outline-none uppercase">ABOUT</button>
-                <a href="#contact" class="hover:text-archText transition-colors">CONTACT</a>
+                <a href="#projects-list-container" class="hover:text-archText transition-colors" data-editable="true">PROJECTS</a>
+                <button id="open-about-btn" class="hover:text-archText transition-colors focus:outline-none uppercase" data-editable="true">ABOUT</button>
+                <a href="#contact" class="hover:text-archText transition-colors" data-editable="true">CONTACT</a>
             </nav>
         </div>
     </header>
 
     <div id="about-modal" class="fixed inset-0 z-50 bg-white/95 backdrop-blur-md hidden flex flex-col justify-between p-8 md:p-20 lg:p-28 transition-opacity duration-300 opacity-0 pointer-events-none">
         <div class="flex justify-between items-center border-b border-archLightBorder pb-4">
-            <span class="text-[10px] font-light tracking-widest text-archMuted uppercase">ABOUT IIRO ARCHITECTS</span>
-            <button id="close-about-btn" class="text-xs font-light text-archText hover:text-archMuted transition-colors focus:outline-none p-1">✕ CLOSE</button>
+            <span class="text-[10px] font-light tracking-widest text-archMuted uppercase" data-editable="true">ABOUT IIRO ARCHITECTS</span>
+            <button id="close-about-btn" class="text-xs tracking-widest text-archText uppercase hover:opacity-60 transition-opacity focus:outline-none">CLOSE</button>
         </div>
-        
-        <div class="max-w-2xl mx-auto my-auto space-y-8 py-12">
-            <h2 class="text-sm md:text-base font-light text-archText leading-relaxed">
-                IIRO ARCHITECTS는 공간의 본질과 구축의 절제를 탐구하는 건축사사무소입니다. 비움과 채움 사이의 완벽한 균형을 모색하며, 오랫동안 온기를 머금는 장소를 만들어냅니다.
-            </h2>
-            <div class="w-8 h-[1px] bg-neutral-300"></div>
-            <p class="text-xs font-light text-archMuted leading-relaxed">
-                우리는 도면과 재료, 빛과 그림자가 이루는 담백한 조화를 중시합니다. 대지가 가진 장소성과 사용자의 삶이 스며드는 지속 가능한 건축 환경을 제안합니다.
+        <div class="max-w-2xl my-auto space-y-6">
+            <h1 class="text-lg md:text-xl font-light tracking-tight leading-relaxed text-archText" data-editable="true">
+                이로건축(IIRO ARCHITECTS)은 공간의 본질에 집중하며, 시간의 흐름 속에서도 가치를 지니는 건축적 언어를 탐구합니다.
+            </h1>
+            <p class="text-[11px] font-light leading-relaxed text-archMuted" data-editable="true">
+                우리는 자연과 도시, 그리고 인간의 삶이 교차하는 지점에서 지속 가능한 형태와 구조를 제안합니다. 각각의 프로젝트는 그 장소가 가진 고유의 맥락과 고요한 대화를 통해 완성됩니다.
             </p>
         </div>
-
-        <div class="border-t border-archLightBorder pt-4 text-[9px] font-light text-archMuted flex justify-between items-center">
-            <span>SEOUL, KOREA</span>
-            <span>IIRO ARCHITECTS</span>
+        <div class="flex justify-between items-center text-[10px] font-light text-archMuted border-t border-archLightBorder pt-4">
+            <span data-editable="true">EST. 2020 / SEOUL</span>
+            <span data-editable="true">ARCHITECTS & URBAN RESEARCHERS</span>
         </div>
     </div>
 
-    <main>
-
-        <section id="hero-title-section" class="snap-section">
-            <div class="max-w-xl space-y-6 text-center px-6">
-                <h1 class="text-sm md:text-base font-light tracking-widest text-archText leading-relaxed uppercase">
-                    신뢰할 수 있는 건축 경험을 제공합니다
-                </h1>
-                <div class="w-6 h-[1px] bg-neutral-300 mx-auto"></div>
-                <p class="text-[10px] font-light tracking-widest text-archMuted uppercase animate-pulse pt-4">
-                    SCROLL DOWN TO EXPLORE
-                </p>
-            </div>
-        </section>
-
-        <div id="projects"></div>
-
-        <!-- Project 1 -->
-        <article class="snap-section space-y-4" data-project-section>
-            <div class="w-full lg:w-2/3 mx-auto px-4 sm:px-0 flex items-baseline justify-between">
-                <div class="flex items-baseline gap-3">
-                    <span class="text-[9px] font-light text-archMuted">2026</span>
-                    <h2 class="text-[11px] font-light tracking-tight text-archText">서촌 유율재 (維律齋)</h2>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button class="nav-prev text-archMuted hover:text-archText transition-colors text-[10px] px-1 focus:outline-none" aria-label="Previous Image">&lt;</button>
-                    <span class="text-[9px] font-light text-archMuted tracking-wider gallery-counter">01 / 05</span>
-                    <button class="nav-next text-archMuted hover:text-archText transition-colors text-[10px] px-1 focus:outline-none" aria-label="Next Image">&gt;</button>
-                </div>
-            </div>
-
-            <div class="w-full lg:w-2/3 mx-auto px-4 sm:px-0 relative group">
-                <div class="carousel-container overflow-hidden w-full relative select-none" data-project="1">
-                    <div class="absolute inset-y-0 left-0 w-1/3 z-20 cursor-w-resize click-prev-zone" title="이전 이미지"></div>
-                    <div class="absolute inset-y-0 right-0 w-1/3 z-20 cursor-e-resize click-next-zone" title="다음 이미지"></div>
-
-                    <div class="carousel-track flex items-center transition-transform duration-500 ease-out gap-1.5 md:gap-2 h-[50vh] md:h-[60vh]">
-                        <div class="carousel-slide h-full aspect-[1.414/1] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-50 overflow-hidden border border-archLightBorder">
-                                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600&auto=format&fit=crop" alt="P1 - Exterior" class="w-full h-full object-cover desaturated-warm-img pointer-events-none">
-                            </div>
-                        </div>
-                        <div class="carousel-slide h-full aspect-[3/4] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-100/90 overflow-hidden border border-archLightBorder flex flex-col items-center justify-center p-8 relative">
-                                <span class="absolute top-4 left-4 text-[9px] text-archMuted font-light tracking-widest uppercase">DIAGRAM — MASS &amp; VOID</span>
-                                <svg class="w-8 h-8 text-neutral-400 mb-3" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.67 2.67 0 0021 17.25l-5.83-5.83M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l5.653-4.655m7.08-2.61a3.75 3.75 0 00-5.303-.53l-3.03 2.496M15 1.5l1.5 3M19.5 6l-3 1.5"></path>
-                                </svg>
-                                <span class="text-[10px] font-light tracking-widest text-neutral-400 uppercase">이미지 준비 중</span>
-                            </div>
-                        </div>
-                        <div class="carousel-slide h-full aspect-[3/4] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-100 overflow-hidden border border-archLightBorder">
-                                <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=1200&auto=format&fit=crop" alt="P1 - Interior" class="w-full h-full object-cover desaturated-warm-img pointer-events-none">
-                            </div>
-                        </div>
-                        <div class="carousel-slide h-full aspect-[1.414/1] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-50 overflow-hidden border border-archLightBorder">
-                                <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?q=80&w=1600&auto=format&fit=crop" alt="P1 - Interior 2" class="w-full h-full object-cover desaturated-warm-img pointer-events-none">
-                            </div>
-                        </div>
-                        <div class="carousel-slide h-full aspect-[3/4] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-100 overflow-hidden border border-archLightBorder">
-                                <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=1200&auto=format&fit=crop" alt="P1 - Facade" class="w-full h-full object-cover desaturated-warm-img pointer-events-none">
-                            </div>
+    <main id="main-content" class="pt-16">
+        <div id="projects-list-container">
+            <!-- TITLE SCREEN -->
+            <section id="title-screen" onclick="scrollToFirstProject()">
+                <div class="text-center space-y-8 px-4">
+                    <h1 class="text-sm md:text-base font-light tracking-[0.25em] text-neutral-800 uppercase" data-editable="true">
+                        신뢰할 수 있는 건축 경험을 제공해드립니다.
+                    </h1>
+                    <div class="flex justify-center pt-2">
+                        <div class="w-7 h-7 rounded-full border border-neutral-300 flex items-center justify-center animate-bounce">
+                            <div class="w-1.5 h-1.5 rounded-full bg-neutral-400"></div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </article>
+            </section>
+        </div>
 
-        <!-- Project 2 -->
-        <article class="snap-section space-y-4" data-project-section>
-            <div class="w-full lg:w-2/3 mx-auto px-4 sm:px-0 flex items-baseline justify-between">
-                <div class="flex items-baseline gap-3">
-                    <span class="text-[9px] font-light text-archMuted">2025</span>
-                    <h2 class="text-[11px] font-light tracking-tight text-archText">양평 정조 파빌리온</h2>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button class="nav-prev text-archMuted hover:text-archText transition-colors text-[10px] px-1 focus:outline-none" aria-label="Previous Image">&lt;</button>
-                    <span class="text-[9px] font-light text-archMuted tracking-wider gallery-counter">01 / 05</span>
-                    <button class="nav-next text-archMuted hover:text-archText transition-colors text-[10px] px-1 focus:outline-none" aria-label="Next Image">&gt;</button>
-                </div>
-            </div>
-
-            <div class="w-full lg:w-2/3 mx-auto px-4 sm:px-0 relative group">
-                <div class="carousel-container overflow-hidden w-full relative select-none" data-project="2">
-                    <div class="absolute inset-y-0 left-0 w-1/3 z-20 cursor-w-resize click-prev-zone" title="이전 이미지"></div>
-                    <div class="absolute inset-y-0 right-0 w-1/3 z-20 cursor-e-resize click-next-zone" title="다음 이미지"></div>
-
-                    <div class="carousel-track flex items-center transition-transform duration-500 ease-out gap-1.5 md:gap-2 h-[50vh] md:h-[60vh]">
-                        <div class="carousel-slide h-full aspect-[3/4] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-100 overflow-hidden border border-archLightBorder">
-                                <img src="https://images.unsplash.com/photo-1506158669146-619067262a00?q=80&w=1200&auto=format&fit=crop" alt="P2 - Column" class="w-full h-full object-cover desaturated-warm-img pointer-events-none">
-                            </div>
-                        </div>
-                        <div class="carousel-slide h-full aspect-[1.414/1] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-50 overflow-hidden border border-archLightBorder">
-                                <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1600&auto=format&fit=crop" alt="P2 - Exterior" class="w-full h-full object-cover desaturated-warm-img pointer-events-none">
-                            </div>
-                        </div>
-                        <div class="carousel-slide h-full aspect-[3/4] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-100/90 overflow-hidden border border-archLightBorder flex flex-col items-center justify-center p-8 relative">
-                                <span class="absolute top-4 left-4 text-[9px] text-archMuted font-light tracking-widest uppercase">DIAGRAM — AXIAL CIRCULATION</span>
-                                <svg class="w-8 h-8 text-neutral-400 mb-3" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"></path>
-                                </svg>
-                                <span class="text-[10px] font-light tracking-widest text-neutral-400 uppercase">이미지 준비 중</span>
-                            </div>
-                        </div>
-                        <div class="carousel-slide h-full aspect-[3/4] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-100 overflow-hidden border border-archLightBorder">
-                                <img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1200&auto=format&fit=crop" alt="P2 - Corridor" class="w-full h-full object-cover desaturated-warm-img pointer-events-none">
-                            </div>
-                        </div>
-                        <div class="carousel-slide h-full aspect-[1.414/1] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-50 overflow-hidden border border-archLightBorder">
-                                <img src="https://images.unsplash.com/photo-1600585154363-67eb9e2e2099?q=80&w=1600&auto=format&fit=crop" alt="P2 - Light Detail" class="w-full h-full object-cover desaturated-warm-img pointer-events-none">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </article>
-
-        <!-- Project 3 -->
-        <article class="snap-section space-y-4" data-project-section>
-            <div class="w-full lg:w-2/3 mx-auto px-4 sm:px-0 flex items-baseline justify-between">
-                <div class="flex items-baseline gap-3">
-                    <span class="text-[9px] font-light text-archMuted">2025</span>
-                    <h2 class="text-[11px] font-light tracking-tight text-archText">평창 클라우드 빌라</h2>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button class="nav-prev text-archMuted hover:text-archText transition-colors text-[10px] px-1 focus:outline-none" aria-label="Previous Image">&lt;</button>
-                    <span class="text-[9px] font-light text-archMuted tracking-wider gallery-counter">01 / 05</span>
-                    <button class="nav-next text-archMuted hover:text-archText transition-colors text-[10px] px-1 focus:outline-none" aria-label="Next Image">&gt;</button>
-                </div>
-            </div>
-
-            <div class="w-full lg:w-2/3 mx-auto px-4 sm:px-0 relative group">
-                <div class="carousel-container overflow-hidden w-full relative select-none" data-project="3">
-                    <div class="absolute inset-y-0 left-0 w-1/3 z-20 cursor-w-resize click-prev-zone" title="이전 이미지"></div>
-                    <div class="absolute inset-y-0 right-0 w-1/3 z-20 cursor-e-resize click-next-zone" title="다음 이미지"></div>
-
-                    <div class="carousel-track flex items-center transition-transform duration-500 ease-out gap-1.5 md:gap-2 h-[50vh] md:h-[60vh]">
-                        <div class="carousel-slide h-full aspect-[1.414/1] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-50 overflow-hidden border border-archLightBorder">
-                                <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=1600&auto=format&fit=crop" alt="P3 - View" class="w-full h-full object-cover desaturated-warm-img pointer-events-none">
-                            </div>
-                        </div>
-                        <div class="carousel-slide h-full aspect-[3/4] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-100 overflow-hidden border border-archLightBorder">
-                                <img src="https://images.unsplash.com/photo-1512915922686-57c11dde9b6b?q=80&w=1200&auto=format&fit=crop" alt="P3 - Staircase" class="w-full h-full object-cover desaturated-warm-img pointer-events-none">
-                            </div>
-                        </div>
-                        <div class="carousel-slide h-full aspect-[1.414/1] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-50 overflow-hidden border border-archLightBorder">
-                                <img src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?q=80&w=1600&auto=format&fit=crop" alt="P3 - Exterior" class="w-full h-full object-cover desaturated-warm-img pointer-events-none">
-                            </div>
-                        </div>
-                        <div class="carousel-slide h-full aspect-[3/4] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-100/90 overflow-hidden border border-archLightBorder flex flex-col items-center justify-center p-8 relative">
-                                <span class="absolute top-4 left-4 text-[9px] text-archMuted font-light tracking-widest uppercase">DIAGRAM — SECTIONAL PROFILE</span>
-                                <svg class="w-8 h-8 text-neutral-400 mb-3" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.67 2.67 0 0021 17.25l-5.83-5.83M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l5.653-4.655m7.08-2.61a3.75 3.75 0 00-5.303-.53l-3.03 2.496M15 1.5l1.5 3M19.5 6l-3 1.5"></path>
-                                </svg>
-                                <span class="text-[10px] font-light tracking-widest text-neutral-400 uppercase">이미지 준비 중</span>
-                            </div>
-                        </div>
-                        <div class="carousel-slide h-full aspect-[3/4] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-100 overflow-hidden border border-archLightBorder">
-                                <img src="https://images.unsplash.com/photo-1600566752355-35792bedcfea?q=80&w=1200&auto=format&fit=crop" alt="P3 - Interior" class="w-full h-full object-cover desaturated-warm-img pointer-events-none">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </article>
-
-        <!-- Project 4 -->
-        <article class="snap-section space-y-4" data-project-section>
-            <div class="w-full lg:w-2/3 mx-auto px-4 sm:px-0 flex items-baseline justify-between">
-                <div class="flex items-baseline gap-3">
-                    <span class="text-[9px] font-light text-archMuted">2024</span>
-                    <h2 class="text-[11px] font-light tracking-tight text-archText">성수동 붉은벽돌 문화공간</h2>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button class="nav-prev text-archMuted hover:text-archText transition-colors text-[10px] px-1 focus:outline-none" aria-label="Previous Image">&lt;</button>
-                    <span class="text-[9px] font-light text-archMuted tracking-wider gallery-counter">01 / 05</span>
-                    <button class="nav-next text-archMuted hover:text-archText transition-colors text-[10px] px-1 focus:outline-none" aria-label="Next Image">&gt;</button>
-                </div>
-            </div>
-
-            <div class="w-full lg:w-2/3 mx-auto px-4 sm:px-0 relative group">
-                <div class="carousel-container overflow-hidden w-full relative select-none" data-project="4">
-                    <div class="absolute inset-y-0 left-0 w-1/3 z-20 cursor-w-resize click-prev-zone" title="이전 이미지"></div>
-                    <div class="absolute inset-y-0 right-0 w-1/3 z-20 cursor-e-resize click-next-zone" title="다음 이미지"></div>
-
-                    <div class="carousel-track flex items-center transition-transform duration-500 ease-out gap-1.5 md:gap-2 h-[50vh] md:h-[60vh]">
-                        <div class="carousel-slide h-full aspect-[3/4] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-100 overflow-hidden border border-archLightBorder">
-                                <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=1200&auto=format&fit=crop" alt="P4 - Brick Detail" class="w-full h-full object-cover desaturated-warm-img pointer-events-none">
-                            </div>
-                        </div>
-                        <div class="carousel-slide h-full aspect-[1.414/1] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-50 overflow-hidden border border-archLightBorder">
-                                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600&auto=format&fit=crop" alt="P4 - Facade" class="w-full h-full object-cover desaturated-warm-img pointer-events-none">
-                            </div>
-                        </div>
-                        <div class="carousel-slide h-full aspect-[3/4] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-100/90 overflow-hidden border border-archLightBorder flex flex-col items-center justify-center p-8 relative">
-                                <span class="absolute top-4 left-4 text-[9px] text-archMuted font-light tracking-widest uppercase">DIAGRAM — BRICK BOND</span>
-                                <svg class="w-8 h-8 text-neutral-400 mb-3" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"></path>
-                                </svg>
-                                <span class="text-[10px] font-light tracking-widest text-neutral-400 uppercase">이미지 준비 중</span>
-                            </div>
-                        </div>
-                        <div class="carousel-slide h-full aspect-[1.414/1] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-50 overflow-hidden border border-archLightBorder">
-                                <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?q=80&w=1600&auto=format&fit=crop" alt="P4 - Interior" class="w-full h-full object-cover desaturated-warm-img pointer-events-none">
-                            </div>
-                        </div>
-                        <div class="carousel-slide h-full aspect-[3/4] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-100 overflow-hidden border border-archLightBorder">
-                                <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=1200&auto=format&fit=crop" alt="P4 - Detail" class="w-full h-full object-cover desaturated-warm-img pointer-events-none">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </article>
-
-        <!-- Project 5 -->
-        <article class="snap-section space-y-4" data-project-section>
-            <div class="w-full lg:w-2/3 mx-auto px-4 sm:px-0 flex items-baseline justify-between">
-                <div class="flex items-baseline gap-3">
-                    <span class="text-[9px] font-light text-archMuted">2024</span>
-                    <h2 class="text-[11px] font-light tracking-tight text-archText">제주 한림 수평선 스튜디오</h2>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button class="nav-prev text-archMuted hover:text-archText transition-colors text-[10px] px-1 focus:outline-none" aria-label="Previous Image">&lt;</button>
-                    <span class="text-[9px] font-light text-archMuted tracking-wider gallery-counter">01 / 05</span>
-                    <button class="nav-next text-archMuted hover:text-archText transition-colors text-[10px] px-1 focus:outline-none" aria-label="Next Image">&gt;</button>
-                </div>
-            </div>
-
-            <div class="w-full lg:w-2/3 mx-auto px-4 sm:px-0 relative group">
-                <div class="carousel-container overflow-hidden w-full relative select-none" data-project="5">
-                    <div class="absolute inset-y-0 left-0 w-1/3 z-20 cursor-w-resize click-prev-zone" title="이전 이미지"></div>
-                    <div class="absolute inset-y-0 right-0 w-1/3 z-20 cursor-e-resize click-next-zone" title="다음 이미지"></div>
-
-                    <div class="carousel-track flex items-center transition-transform duration-500 ease-out gap-1.5 md:gap-2 h-[50vh] md:h-[60vh]">
-                        <div class="carousel-slide h-full aspect-[1.414/1] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-50 overflow-hidden border border-archLightBorder">
-                                <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1600&auto=format&fit=crop" alt="P5 - Ocean View" class="w-full h-full object-cover desaturated-warm-img pointer-events-none">
-                            </div>
-                        </div>
-                        <div class="carousel-slide h-full aspect-[3/4] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-100 overflow-hidden border border-archLightBorder">
-                                <img src="https://images.unsplash.com/photo-1506158669146-619067262a00?q=80&w=1200&auto=format&fit=crop" alt="P5 - Concrete" class="w-full h-full object-cover desaturated-warm-img pointer-events-none">
-                            </div>
-                        </div>
-                        <div class="carousel-slide h-full aspect-[1.414/1] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-50 overflow-hidden border border-archLightBorder">
-                                <img src="https://images.unsplash.com/photo-1600585154363-67eb9e2e2099?q=80&w=1600&auto=format&fit=crop" alt="P5 - Sunset" class="w-full h-full object-cover desaturated-warm-img pointer-events-none">
-                            </div>
-                        </div>
-                        <div class="carousel-slide h-full aspect-[3/4] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-100/90 overflow-hidden border border-archLightBorder flex flex-col items-center justify-center p-8 relative">
-                                <span class="absolute top-4 left-4 text-[9px] text-archMuted font-light tracking-widest uppercase">DIAGRAM — HORIZON AXIS</span>
-                                <svg class="w-8 h-8 text-neutral-400 mb-3" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"></path>
-                                </svg>
-                                <span class="text-[10px] font-light tracking-widest text-neutral-400 uppercase">이미지 준비 중</span>
-                            </div>
-                        </div>
-                        <div class="carousel-slide h-full aspect-[3/4] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-100 overflow-hidden border border-archLightBorder">
-                                <img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1200&auto=format&fit=crop" alt="P5 - Hallway" class="w-full h-full object-cover desaturated-warm-img pointer-events-none">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </article>
-
-        <!-- Project 6 -->
-        <article class="snap-section space-y-4" data-project-section>
-            <div class="w-full lg:w-2/3 mx-auto px-4 sm:px-0 flex items-baseline justify-between">
-                <div class="flex items-baseline gap-3">
-                    <span class="text-[9px] font-light text-archMuted">2023</span>
-                    <h2 class="text-[11px] font-light tracking-tight text-archText">삼청동 도담헌 (陶담軒)</h2>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button class="nav-prev text-archMuted hover:text-archText transition-colors text-[10px] px-1 focus:outline-none" aria-label="Previous Image">&lt;</button>
-                    <span class="text-[9px] font-light text-archMuted tracking-wider gallery-counter">01 / 05</span>
-                    <button class="nav-next text-archMuted hover:text-archText transition-colors text-[10px] px-1 focus:outline-none" aria-label="Next Image">&gt;</button>
-                </div>
-            </div>
-
-            <div class="w-full lg:w-2/3 mx-auto px-4 sm:px-0 relative group">
-                <div class="carousel-container overflow-hidden w-full relative select-none" data-project="6">
-                    <div class="absolute inset-y-0 left-0 w-1/3 z-20 cursor-w-resize click-prev-zone" title="이전 이미지"></div>
-                    <div class="absolute inset-y-0 right-0 w-1/3 z-20 cursor-e-resize click-next-zone" title="다음 이미지"></div>
-
-                    <div class="carousel-track flex items-center transition-transform duration-500 ease-out gap-1.5 md:gap-2 h-[50vh] md:h-[60vh]">
-                        <div class="carousel-slide h-full aspect-[3/4] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-100 overflow-hidden border border-archLightBorder">
-                                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200&auto=format&fit=crop" alt="P6 - Courtyard" class="w-full h-full object-cover desaturated-warm-img pointer-events-none">
-                            </div>
-                        </div>
-                        <div class="carousel-slide h-full aspect-[1.414/1] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-50 overflow-hidden border border-archLightBorder">
-                                <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=1600&auto=format&fit=crop" alt="P6 - Wooden Structure" class="w-full h-full object-cover desaturated-warm-img pointer-events-none">
-                            </div>
-                        </div>
-                        <div class="carousel-slide h-full aspect-[3/4] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-100/90 overflow-hidden border border-archLightBorder flex flex-col items-center justify-center p-8 relative">
-                                <span class="absolute top-4 left-4 text-[9px] text-archMuted font-light tracking-widest uppercase">DIAGRAM — MADANG &amp; ROOM</span>
-                                <svg class="w-8 h-8 text-neutral-400 mb-3" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-.996l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628.996l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z"></path>
-                                </svg>
-                                <span class="text-[10px] font-light tracking-widest text-neutral-400 uppercase">이미지 준비 중</span>
-                            </div>
-                        </div>
-                        <div class="carousel-slide h-full aspect-[1.414/1] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-50 overflow-hidden border border-archLightBorder">
-                                <img src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?q=80&w=1600&auto=format&fit=crop" alt="P6 - Main Hall" class="w-full h-full object-cover desaturated-warm-img pointer-events-none">
-                            </div>
-                        </div>
-                        <div class="carousel-slide h-full aspect-[3/4] flex-shrink-0">
-                            <div class="w-full h-full bg-neutral-100 overflow-hidden border border-archLightBorder">
-                                <img src="https://images.unsplash.com/photo-1512915922686-57c11dde9b6b?q=80&w=1200&auto=format&fit=crop" alt="P6 - Detail" class="w-full h-full object-cover desaturated-warm-img pointer-events-none">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </article>
-
-        <!-- Contact Section -->
-        <section id="contact" class="snap-section px-8 md:px-20 lg:px-28">
-            <div class="max-w-2xl mx-auto space-y-8 w-full">
-                <span class="text-[10px] font-light tracking-widest text-archMuted uppercase">CONTACT</span>
-                <div class="space-y-2 text-xs font-light text-archText">
-                    <p>서울특별시 종로구 자하문로 12길 3</p>
-                    <p>info@iiroarchitects.com</p>
-                    <p>+82 (0)2 730 1160</p>
-                </div>
-                <div class="pt-8 text-[9px] font-light text-archMuted border-t border-archLightBorder">
-                    © IIRO ARCHITECTS. ALL RIGHTS RESERVED.
-                </div>
-            </div>
-        </section>
-
+        <div id="admin-add-project-bar" class="hidden my-12 text-center">
+            <button onclick="addNewProject()" class="px-6 py-3 bg-neutral-900 hover:bg-black text-white text-xs tracking-wider uppercase font-medium rounded-lg shadow-md transition-all border border-neutral-700 inline-flex items-center gap-2">
+                <i class="fa-solid fa-square-plus text-sm text-emerald-400"></i> 새로운 프로젝트 추가하기
+            </button>
+        </div>
     </main>
 
+    <footer id="contact" class="py-20 border-t border-archLightBorder text-center bg-white space-y-4">
+        <div class="text-[10px] font-light tracking-widest text-archMuted space-y-1">
+            <p data-editable="true">IIRO ARCHITECTS</p>
+            <p data-editable="true">CONTACT@IIRO.KR | +82 (0)2 123 4567</p>
+            <p data-editable="true" class="text-[9px] pt-2">© 2026 IIRO ARCHITECTS. ALL RIGHTS RESERVED.</p>
+        </div>
+        <div class="flex items-center justify-center gap-4">
+            <button onclick="handleAdminClick()" class="text-[9px] font-mono text-neutral-300 hover:text-neutral-600 transition-colors tracking-widest uppercase focus:outline-none">
+                ADMIN
+            </button>
+            <button id="footer-change-pass-btn" onclick="promptChangePassword()" class="hidden text-[9px] font-mono text-amber-600 hover:text-amber-800 transition-colors tracking-widest uppercase focus:outline-none">
+                | 비밀번호 바꾸기
+            </button>
+        </div>
+    </footer>
+
+    <div id="export-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white p-6 md:p-8 rounded-xl max-w-2xl w-full shadow-2xl border border-neutral-200 flex flex-col max-h-[85vh]">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xs font-semibold tracking-wider text-neutral-800 uppercase flex items-center gap-2">
+                    <i class="fa-solid fa-code text-indigo-600"></i> GitHub Pages / 웹용 HTML 내보내기
+                </h3>
+                <button onclick="closeExportModal()" class="text-neutral-400 hover:text-neutral-700 text-sm">✕</button>
+            </div>
+            <p class="text-[11px] text-neutral-600 mb-3">수정된 전체 소스코드입니다. 아래 코드를 복사하여 index.html에 덮어쓰거나 저장하세요.</p>
+            <textarea id="export-code-area" class="w-full flex-grow p-3 text-[10px] font-mono bg-neutral-900 text-emerald-400 rounded border border-neutral-700 focus:outline-none resize-none mb-4" readonly></textarea>
+            <div class="flex justify-end gap-2">
+                <button onclick="copyExportCode()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs rounded transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-copy"></i> 코드 복사하기
+                </button>
+                <button onclick="closeExportModal()" class="px-4 py-2 bg-neutral-200 hover:bg-neutral-300 text-neutral-800 font-medium text-xs rounded transition">
+                    닫기
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const heroTitleSection = document.getElementById('hero-title-section');
+        let projectsData = [
+            {
+                id: 'proj-1',
+                year: '2026',
+                title: '서촌 유율재 (維律齋)',
+                images: [
+                    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600&auto=format&fit=crop',
+                    'https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=1200&auto=format&fit=crop',
+                    'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?q=80&w=1600&auto=format&fit=crop',
+                    'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=1200&auto=format&fit=crop'
+                ]
+            },
+            {
+                id: 'proj-2',
+                year: '2025',
+                title: '양평 정조 파빌리온',
+                images: [
+                    'https://images.unsplash.com/photo-1506158669146-619067262a00?q=80&w=1200&auto=format&fit=crop',
+                    'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1600&auto=format&fit=crop',
+                    'https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1200&auto=format&fit=crop',
+                    'https://images.unsplash.com/photo-1600585154363-67eb9e2e2099?q=80&w=1600&auto=format&fit=crop'
+                ]
+            },
+            {
+                id: 'proj-3',
+                year: '2025',
+                title: '평창 클라우드 빌라',
+                images: [
+                    'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=1600&auto=format&fit=crop',
+                    'https://images.unsplash.com/photo-1512915922686-57c11dde9b6b?q=80&w=1200&auto=format&fit=crop',
+                    'https://images.unsplash.com/photo-1600585152220-90363fe7e115?q=80&w=1600&auto=format&fit=crop',
+                    'https://images.unsplash.com/photo-1600566752355-35792bedcfea?q=80&w=1200&auto=format&fit=crop'
+                ]
+            },
+            {
+                id: 'proj-4',
+                year: '2024',
+                title: '성수동 붉은벽돌 문화공간',
+                images: [
+                    'https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=1200&auto=format&fit=crop',
+                    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600&auto=format&fit=crop',
+                    'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?q=80&w=1600&auto=format&fit=crop'
+                ]
+            }
+        ];
+        let currentAdminPassword = localStorage.getItem('iiro_admin_pass') || '1234';
+        let isAdmin = false;
+        let isPreviewMode = false;
+        const projectIndices = {};
+        const scrollLocks = {};
 
-            if (heroTitleSection) {
-                window.addEventListener('scroll', () => {
-                    const scrollY = window.scrollY;
-                    if (scrollY > 50) {
-                        heroTitleSection.classList.add('hero-hidden');
-                    } else {
-                        heroTitleSection.classList.remove('hero-hidden');
-                    }
-                }, { passive: true });
+        function renderProjects() {
+            const container = document.getElementById('projects-list-container');
+            const titleScreen = document.getElementById('title-screen');
+            
+            container.innerHTML = '';
+            if (titleScreen) {
+                container.appendChild(titleScreen);
             }
 
-            // Silk-smooth custom wheel momentum scrolling between sections
-            const sections = document.querySelectorAll('.snap-section');
-            let isScrolling = false;
-
-            window.addEventListener('wheel', (e) => {
-                if (isScrolling) return;
-
-                const scrollPos = window.scrollY;
-                const windowHeight = window.innerHeight;
-                let currentIdx = Math.round(scrollPos / windowHeight);
-
-                if (e.deltaY > 25 && currentIdx < sections.length - 1) {
-                    isScrolling = true;
-                    e.preventDefault();
-                    sections[currentIdx + 1].scrollIntoView({ behavior: 'smooth' });
-                    setTimeout(() => { isScrolling = false; }, 700);
-                } else if (e.deltaY < -25 && currentIdx > 0) {
-                    isScrolling = true;
-                    e.preventDefault();
-                    sections[currentIdx - 1].scrollIntoView({ behavior: 'smooth' });
-                    setTimeout(() => { isScrolling = false; }, 700);
+            projectsData.forEach((project) => {
+                if (projectIndices[project.id] === undefined) {
+                    projectIndices[project.id] = 0;
                 }
-            }, { passive: false });
 
-            // About Modal Toggle
-            const openAboutBtn = document.getElementById('open-about-btn');
-            const closeAboutBtn = document.getElementById('close-about-btn');
-            const aboutModal = document.getElementById('about-modal');
+                const projectSection = document.createElement('article');
+                projectSection.className = 'snap-section space-y-4';
+                projectSection.setAttribute('data-project-id', project.id);
 
-            if (openAboutBtn && closeAboutBtn && aboutModal) {
-                openAboutBtn.addEventListener('click', () => {
-                    aboutModal.classList.remove('hidden');
-                    setTimeout(() => {
-                        aboutModal.classList.remove('opacity-0', 'pointer-events-none');
-                        aboutModal.classList.add('opacity-100', 'pointer-events-auto');
-                    }, 10);
-                });
+                const isEditing = isAdmin && !isPreviewMode;
 
-                const closeAbout = () => {
-                    aboutModal.classList.remove('opacity-100', 'pointer-events-auto');
-                    aboutModal.classList.add('opacity-0', 'pointer-events-none');
-                    setTimeout(() => {
-                        aboutModal.classList.add('hidden');
-                    }, 300);
-                };
+                projectSection.innerHTML = `
+                    <div class="w-full ${isEditing ? 'lg:w-[85%]' : 'lg:w-1/2'} mx-auto px-4 flex flex-wrap items-baseline justify-between gap-2 transition-all duration-300">
+                        <div class="flex items-baseline gap-3">
+                            <span class="text-[9px] font-light text-archMuted" data-editable="true" onblur="updateProjectMeta('${project.id}', 'year', this.innerText)">${project.year}</span>
+                            <h2 class="text-[11px] font-light tracking-tight text-archText font-medium" data-editable="true" onblur="updateProjectMeta('${project.id}', 'title', this.innerText)">${project.title}</h2>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="flex items-center gap-2">
+                                <button onclick="navigateCarousel('${project.id}', -1)" class="text-archMuted hover:text-archText transition-colors text-[10px] px-1 focus:outline-none" aria-label="Previous Image">&lt;</button>
+                                <span class="text-[9px] font-light text-archMuted tracking-wider gallery-counter" id="counter-${project.id}">${String((projectIndices[project.id] || 0) + 1).padStart(2, '0')} / ${String(project.images.length).padStart(2, '0')}</span>
+                                <button onclick="navigateCarousel('${project.id}', 1)" class="text-archMuted hover:text-archText transition-colors text-[10px] px-1 focus:outline-none" aria-label="Next Image">&gt;</button>
+                            </div>
+                            <button onclick="deleteProject('${project.id}')" class="admin-only ${isEditing ? 'inline-flex' : 'hidden'} px-2 py-0.5 bg-rose-600/10 hover:bg-rose-600 text-rose-600 hover:text-white rounded text-[10px] transition border border-rose-200">
+                                <i class="fa-solid fa-trash mr-1"></i> 프로젝트 삭제
+                            </button>
+                        </div>
+                    </div>
 
-                closeAboutBtn.addEventListener('click', closeAbout);
+                    <div class="w-full ${isEditing ? 'lg:w-[85%]' : 'lg:w-1/2'} mx-auto px-4 flex flex-col ${isEditing ? 'lg:flex-row' : ''} gap-6 items-center justify-center transition-all duration-300">
+                        
+                        <!-- 1/2 PHOTO CAROUSEL AREA (Fixed Height Container, Auto Width Display) -->
+                        <div class="w-full ${isEditing ? 'lg:w-1/2' : 'w-full'} flex-1 relative group overflow-hidden rounded">
+                            <div class="carousel-container overflow-x-auto overflow-y-hidden w-full relative select-none rounded border border-archLightBorder bg-neutral-50 flex items-center scrollbar-none" id="carousel-${project.id}">
+                                <div class="carousel-track flex items-center transition-transform duration-500 ease-out gap-4 h-[50vh] md:h-[55vh] py-3 px-4" id="track-${project.id}">
+                                    ${project.images.map((imgUrl, imgIdx) => `
+                                        <div class="carousel-slide flex-none h-full relative snap-center flex items-center justify-center overflow-hidden rounded bg-transparent">
+                                            <!-- 높이 기준(h-full), 가로폭은 자동(w-auto)으로 세로/가로 비율 보존 및 다음 사진이 자연스럽게 보이도록 배치 -->
+                                            <img src="${imgUrl}" alt="${project.title}" class="h-full w-auto object-cover desaturated-warm-img pointer-events-none rounded shadow-sm" onerror="this.src='https://placehold.co/1200x800/f5f5f5/111111?text=IIRO+ARCH'">
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- RIGHT SIDE ADMIN IMAGE MANAGEMENT LIST (Visible in edit mode) -->
+                        <div class="admin-only ${isEditing ? 'flex' : 'hidden'} w-full lg:w-1/2 h-[50vh] md:h-[55vh] flex-col bg-neutral-900 text-neutral-200 p-4 rounded-lg shadow-xl border border-neutral-800 space-y-3">
+                            <div class="flex items-center justify-between border-b border-neutral-800 pb-2">
+                                <span class="text-[11px] font-semibold text-emerald-400 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-list-check"></i> 이미지 목록 & 관리 (${project.images.length})
+                                </span>
+                                <div class="flex items-center gap-1.5">
+                                    <label class="cursor-pointer px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-[10px] transition inline-flex items-center gap-1">
+                                        <i class="fa-solid fa-upload"></i> 업로드
+                                        <input type="file" accept="image/*" class="hidden" onchange="uploadProjectImage(event, '${project.id}')">
+                                    </label>
+                                    <button onclick="promptAddImageUrl('${project.id}')" class="px-2.5 py-1 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 rounded text-[10px] transition border border-neutral-700 inline-flex items-center gap-1">
+                                        <i class="fa-solid fa-link"></i> URL
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- IMAGE ITEMS LIST -->
+                            <div class="flex-grow overflow-y-auto space-y-2 pr-1">
+                                ${project.images.map((imgUrl, imgIdx) => `
+                                    <div class="flex items-center justify-between p-2 rounded bg-neutral-800/80 hover:bg-neutral-800 border border-neutral-700/60 transition gap-2">
+                                        <div class="flex items-center gap-2.5 overflow-hidden">
+                                            <span class="text-[10px] font-mono text-neutral-400 w-4">${imgIdx + 1}.</span>
+                                            <img src="${imgUrl}" class="w-10 h-10 object-cover rounded border border-neutral-700 flex-shrink-0" onerror="this.src='https://placehold.co/100/f5f5f5/111111?text=IMG'">
+                                            <span class="text-[10px] font-mono text-neutral-300 truncate max-w-[120px] md:max-w-[180px]">${imgUrl}</span>
+                                        </div>
+                                        <div class="flex items-center gap-1 flex-shrink-0">
+                                            <button onclick="moveImage('${project.id}', ${imgIdx}, -1)" ${imgIdx === 0 ? 'disabled' : ''} class="px-2 py-1 bg-neutral-700 hover:bg-neutral-600 disabled:opacity-30 rounded text-[10px]" title="위로 이동">&uarr;</button>
+                                            <button onclick="moveImage('${project.id}', ${imgIdx}, 1)" ${imgIdx === project.images.length - 1 ? 'disabled' : ''} class="px-2 py-1 bg-neutral-700 hover:bg-neutral-600 disabled:opacity-30 rounded text-[10px]" title="아래로 이동">&darr;</button>
+                                            <button onclick="removeImage('${project.id}', ${imgIdx})" class="px-2 py-1 bg-rose-900/60 hover:bg-rose-800 text-rose-300 rounded text-[10px] ml-1" title="삭제"><i class="fa-solid fa-trash-can"></i></button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                    </div>
+                `;
+                container.appendChild(projectSection);
+
+                // Wheel interaction for carousel
+                const carouselEl = document.getElementById(`carousel-${project.id}`);
+                if (carouselEl) {
+                    carouselEl.addEventListener('wheel', function(e) {
+                        e.preventDefault();
+                        if (scrollLocks[project.id]) return;
+
+                        const direction = e.deltaY > 0 ? 1 : -1;
+                        const currentIdx = projectIndices[project.id] || 0;
+                        const maxIdx = project.images.length - 1;
+
+                        if (direction > 0) {
+                            if (currentIdx < maxIdx) {
+                                projectIndices[project.id] = currentIdx + 1;
+                                updateCarouselView(project.id);
+                                scrollLocks[project.id] = true;
+                                setTimeout(() => { scrollLocks[project.id] = false; }, 400);
+                            } else {
+                                const nextSection = projectSection.nextElementSibling;
+                                if (nextSection && nextSection.classList.contains('snap-section')) {
+                                    scrollLocks[project.id] = true;
+                                    nextSection.scrollIntoView({ behavior: 'smooth' });
+                                    setTimeout(() => { scrollLocks[project.id] = false; }, 800);
+                                }
+                            }
+                        } else {
+                            if (currentIdx > 0) {
+                                projectIndices[project.id] = currentIdx - 1;
+                                updateCarouselView(project.id);
+                                scrollLocks[project.id] = true;
+                                setTimeout(() => { scrollLocks[project.id] = false; }, 400);
+                            } else {
+                                const prevSection = projectSection.previousElementSibling;
+                                if (prevSection) {
+                                    scrollLocks[project.id] = true;
+                                    prevSection.scrollIntoView({ behavior: 'smooth' });
+                                    setTimeout(() => { scrollLocks[project.id] = false; }, 800);
+                                }
+                            }
+                        }
+                    }, { passive: false });
+                }
+            });
+
+            if (isAdmin && !isPreviewMode) {
+                document.body.classList.add('admin-editing');
+            } else {
+                document.body.classList.remove('admin-editing');
+            }
+        }
+
+        function navigateCarousel(projectId, direction) {
+            const project = projectsData.find(p => p.id === projectId);
+            if (!project || project.images.length === 0) return;
+
+            if (projectIndices[projectId] === undefined) {
+                projectIndices[projectId] = 0;
             }
 
-            // Carousel Navigation, Hotspot & Drag/Swipe Interactions
-            document.querySelectorAll('.carousel-container').forEach(container => {
-                const track = container.querySelector('.carousel-track');
-                const slides = container.querySelectorAll('.carousel-slide');
-                const article = container.closest('article');
-                const counter = article.querySelector('.gallery-counter');
-                const prevBtn = article.querySelector('.nav-prev');
-                const nextBtn = article.querySelector('.nav-next');
-                const leftZone = container.querySelector('.click-prev-zone');
-                const rightZone = container.querySelector('.click-next-zone');
+            const currentIndex = projectIndices[projectId];
+            const newIndex = currentIndex + direction;
 
-                let currentIndex = 0;
-                const totalSlides = slides.length;
+            if (newIndex >= project.images.length || newIndex < 0) {
+                return;
+            }
 
-                const updateCarousel = (index) => {
-                    currentIndex = index;
-                    
-                    let offset = 0;
-                    for (let i = 0; i < currentIndex; i++) {
-                        const slideWidth = slides[i].getBoundingClientRect().width;
-                        const gap = parseFloat(getComputedStyle(track).gap) || 6;
-                        offset += slideWidth + gap;
-                    }
+            projectIndices[projectId] = newIndex;
+            updateCarouselView(projectId);
+        }
 
-                    const containerWidth = container.getBoundingClientRect().width;
-                    const totalTrackWidth = Array.from(slides).reduce((acc, slide) => {
-                        return acc + slide.getBoundingClientRect().width + (parseFloat(getComputedStyle(track).gap) || 6);
-                    }, 0);
+        function updateCarouselView(projectId) {
+            const project = projectsData.find(p => p.id === projectId);
+            if (!project) return;
+            const idx = projectIndices[projectId] || 0;
 
-                    const maxOffset = Math.max(0, totalTrackWidth - containerWidth);
-                    const clampedOffset = Math.min(offset, maxOffset);
+            const track = document.getElementById(`track-${projectId}`);
+            if (track) {
+                const slides = track.querySelectorAll('.carousel-slide');
+                if (slides[idx]) {
+                    slides[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                }
+            }
 
-                    track.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
-                    track.style.transform = `translateX(-${clampedOffset}px)`;
-                    
-                    if (counter) {
-                        counter.textContent = `${String(currentIndex + 1).padStart(2, '0')} / ${String(totalSlides).padStart(2, '0')}`;
-                    }
-                };
+            const counter = document.getElementById(`counter-${projectId}`);
+            if (counter) {
+                counter.innerText = `${String(idx + 1).padStart(2, '0')} / ${String(project.images.length).padStart(2, '0')}`;
+            }
+        }
 
-                const nextSlide = () => {
-                    if (currentIndex < totalSlides - 1) {
-                        updateCarousel(currentIndex + 1);
-                    } else {
-                        updateCarousel(0);
-                    }
-                };
+        function moveImage(projectId, index, delta) {
+            const project = projectsData.find(p => p.id === projectId);
+            if (!project) return;
 
-                const prevSlide = () => {
-                    if (currentIndex > 0) {
-                        updateCarousel(currentIndex - 1);
-                    }
-                };
+            const newIndex = index + delta;
+            if (newIndex < 0 || newIndex >= project.images.length) return;
 
-                if (nextBtn) nextBtn.addEventListener('click', nextSlide);
-                if (prevBtn) prevBtn.addEventListener('click', prevSlide);
-                if (rightZone) rightZone.addEventListener('click', nextSlide);
-                if (leftZone) leftZone.addEventListener('click', prevSlide);
+            const temp = project.images[index];
+            project.images[index] = project.images[newIndex];
+            project.images[newIndex] = temp;
 
-                // Mouse & Touch Drag/Swipe functionality
-                let isDragging = false;
-                let startX = 0;
-                let currentTranslate = 0;
-                let prevTranslate = 0;
-                let hasMoved = false;
+            renderProjects();
+        }
 
-                const getPositionX = (e) => {
-                    return e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
-                };
+        function removeImage(projectId, index) {
+            const project = projectsData.find(p => p.id === projectId);
+            if (!project) return;
 
-                const touchStart = (e) => {
-                    if (e.target.classList.contains('click-prev-zone') || e.target.classList.contains('click-next-zone')) {
-                        return;
-                    }
-                    isDragging = true;
-                    hasMoved = false;
-                    startX = getPositionX(e);
+            if (project.images.length <= 1) {
+                alert('최소 1개 이상의 이미지가 필요합니다.');
+                return;
+            }
 
-                    let offset = 0;
-                    for (let i = 0; i < currentIndex; i++) {
-                        const slideWidth = slides[i].getBoundingClientRect().width;
-                        const gap = parseFloat(getComputedStyle(track).gap) || 6;
-                        offset += slideWidth + gap;
-                    }
-                    prevTranslate = -offset;
-                    currentTranslate = prevTranslate;
-                    track.style.transition = 'none';
-                };
+            project.images.splice(index, 1);
+            if (projectIndices[projectId] >= project.images.length) {
+                projectIndices[projectId] = project.images.length - 1;
+            }
+            renderProjects();
+        }
 
-                const touchMove = (e) => {
-                    if (!isDragging) return;
-                    const currentX = getPositionX(e);
-                    const diff = currentX - startX;
-                    if (Math.abs(diff) > 5) {
-                        hasMoved = true;
-                    }
-                    currentTranslate = prevTranslate + diff;
-                    track.style.transform = `translateX(${currentTranslate}px)`;
-                };
+        function uploadProjectImage(event, projectId) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-                const touchEnd = () => {
-                    if (!isDragging) return;
-                    isDragging = false;
-                    track.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const project = projectsData.find(p => p.id === projectId);
+                if (project) {
+                    project.images.push(e.target.result);
+                    renderProjects();
+                }
+            };
+            reader.readAsDataURL(file);
+        }
 
-                    const movedBy = currentTranslate - prevTranslate;
+        function promptAddImageUrl(projectId) {
+            const url = prompt('추가할 이미지의 인터넷 URL을 입력하세요:');
+            if (url && url.trim() !== '') {
+                const project = projectsData.find(p => p.id === projectId);
+                if (project) {
+                    project.images.push(url.trim());
+                    renderProjects();
+                }
+            }
+        }
 
-                    if (hasMoved) {
-                        if (movedBy < -60 && currentIndex < totalSlides - 1) {
-                            updateCarousel(currentIndex + 1);
-                        } else if (movedBy > 60 && currentIndex > 0) {
-                            updateCarousel(currentIndex - 1);
-                        } else {
-                            updateCarousel(currentIndex);
-                        }
-                    }
-                };
+        function updateProjectMeta(projectId, field, value) {
+            const project = projectsData.find(p => p.id === projectId);
+            if (project) {
+                project[field] = value.trim();
+            }
+        }
 
-                container.addEventListener('mousedown', touchStart);
-                container.addEventListener('mousemove', touchMove);
-                window.addEventListener('mouseup', touchEnd);
-
-                container.addEventListener('touchstart', touchStart, { passive: true });
-                container.addEventListener('touchmove', touchMove, { passive: true });
-                container.addEventListener('touchend', touchEnd);
+        function addNewProject() {
+            const newId = 'proj-' + Date.now();
+            projectsData.push({
+                id: newId,
+                year: new Date().getFullYear().toString(),
+                title: '신규 프로젝트 제목',
+                images: [
+                    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600&auto=format&fit=crop'
+                ]
             });
-        });
+            renderProjects();
+            setTimeout(() => {
+                const el = document.querySelector(`[data-project-id="${newId}"]`);
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }
+
+        function deleteProject(projectId) {
+            if (confirm('이 프로젝트를 삭제하시겠습니까?')) {
+                projectsData = projectsData.filter(p => p.id !== projectId);
+                renderProjects();
+            }
+        }
+
+        function handleAdminClick() {
+            if (isAdmin) {
+                logoutAdmin();
+                return;
+            }
+
+            const inputPass = prompt('관리자 비밀번호를 입력하세요:');
+            if (inputPass === null) return;
+
+            if (inputPass === currentAdminPassword) {
+                isAdmin = true;
+                document.getElementById('admin-bar').classList.remove('hidden');
+                document.getElementById('admin-add-project-bar').classList.remove('hidden');
+                document.getElementById('footer-change-pass-btn').classList.remove('hidden');
+                renderProjects();
+                alert('성공적으로 관리자 로그인되었습니다.');
+            } else {
+                alert('비밀번호가 올바르지 않습니다.');
+            }
+        }
+
+        function promptChangePassword() {
+            if (!isAdmin) return;
+
+            const currPass = prompt('현재 비밀번호를 입력하세요:');
+            if (currPass === null) return;
+
+            if (currPass !== currentAdminPassword) {
+                alert('현재 비밀번호가 일치하지 않습니다.');
+                return;
+            }
+
+            const newPass = prompt('새로운 비밀번호를 입력하세요:');
+            if (newPass === null) return;
+
+            if (newPass.trim() === '') {
+                alert('비밀번호는 공백일 수 없습니다.');
+                return;
+            }
+
+            const confirmPass = prompt('새로운 비밀번호를 한번 더 입력하세요:');
+            if (newPass !== confirmPass) {
+                alert('비밀번호 확인이 일치하지 않습니다.');
+                return;
+            }
+
+            currentAdminPassword = newPass;
+            localStorage.setItem('iiro_admin_pass', newPass);
+            alert('비밀번호가 변경되었습니다!');
+        }
+
+        function logoutAdmin() {
+            isAdmin = false;
+            isPreviewMode = false;
+            document.getElementById('admin-bar').classList.add('hidden');
+            document.getElementById('admin-add-project-bar').classList.add('hidden');
+            document.getElementById('footer-change-pass-btn').classList.add('hidden');
+            renderProjects();
+            alert('로그아웃되었습니다.');
+        }
+
+        function togglePreviewMode() {
+            isPreviewMode = !isPreviewMode;
+            const btnText = document.getElementById('preview-text');
+            if (isPreviewMode) {
+                btnText.innerText = '수정모드로 돌아가기';
+            } else {
+                btnText.innerText = '미리보기';
+            }
+            renderProjects();
+        }
+
+        function saveChanges() {
+            alert('변경 사항이 성공적으로 저장되었습니다!');
+        }
+
+        function scrollToFirstProject() {
+            const titleScreen = document.getElementById('title-screen');
+            if (titleScreen && titleScreen.nextElementSibling) {
+                titleScreen.nextElementSibling.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function openExportModal() {
+            const fullHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+            document.getElementById('export-code-area').value = fullHtml;
+            document.getElementById('export-modal').classList.remove('hidden');
+        }
+
+        function closeExportModal() {
+            document.getElementById('export-modal').classList.add('hidden');
+        }
+
+        function copyExportCode() {
+            const textarea = document.getElementById('export-code-area');
+            textarea.select();
+            document.execCommand('copy');
+            alert('전체 코드가 클립보드에 복사되었습니다!');
+        }
+
+        const openAboutBtn = document.getElementById('open-about-btn');
+        if (openAboutBtn) {
+            openAboutBtn.addEventListener('click', () => {
+                const modal = document.getElementById('about-modal');
+                if (modal) {
+                    modal.classList.remove('hidden');
+                    setTimeout(() => {
+                        modal.classList.remove('opacity-0', 'pointer-events-none');
+                    }, 10);
+                }
+            });
+        }
+
+        const closeAboutBtn = document.getElementById('close-about-btn');
+        if (closeAboutBtn) {
+            closeAboutBtn.addEventListener('click', () => {
+                const modal = document.getElementById('about-modal');
+                if (modal) {
+                    modal.classList.add('opacity-0', 'pointer-events-none');
+                    setTimeout(() => {
+                        modal.classList.add('hidden');
+                    }, 300);
+                }
+            });
+        }
+
+        window.onload = function() {
+            renderProjects();
+        };
     </script>
 </body>
-</html>
