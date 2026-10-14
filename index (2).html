@@ -1,0 +1,971 @@
+!DOCTYPE html
+html lang=ko class=scroll-smooth
+head
+    meta charset=UTF-8
+    meta name=viewport content=width=device-width, initial-scale=1.0
+    titleIIRO ARCHITECTStitle
+
+    !-- Open Graph  KakaoTalk Preview Meta Tags --
+    meta property=ogtype content=website
+    meta property=ogtitle content=IIRO ARCHITECTS
+    meta property=ogdescription content=공간의 본질과 구축의 절제를 탐구하는 건축사사무소
+    meta property=ogimage content=httpsplacehold.co1200x630e5e5e5333333text=IIRO+ARCHITECTS
+    meta property=ogimagewidth content=1200
+    meta property=ogimageheight content=630
+    meta property=ogimagealt content=IIRO ARCHITECTS Preview
+
+    script src=httpscdn.tailwindcss.comscript
+    link rel=preconnect href=httpsfonts.googleapis.com
+    link rel=preconnect href=httpsfonts.gstatic.com crossorigin
+    link href=httpsfonts.googleapis.comcss2family=Interwght@200;300;400;500;600&family=Noto+Sans+KRwght@200;300;400;500&display=swap rel=stylesheet
+    link rel=stylesheet href=httpscdnjs.cloudflare.comajaxlibsfont-awesome6.4.0cssall.min.css
+
+    script
+        tailwind.config = {
+            theme {
+                extend {
+                    colors {
+                        archBg '#FFFFFF',
+                        archText '#111111',
+                        archMuted '#888888',
+                        archLightBorder '#EFEFEF'
+                    },
+                    fontFamily {
+                        sans ['Inter', 'Noto Sans KR', 'sans-serif']
+                    }
+                }
+            }
+        }
+    script
+    style
+        html {
+            scroll-behavior smooth;
+        }
+
+        body {
+            background-color #FFFFFF;
+            color #111111;
+            font-family 'Inter', 'Noto Sans KR', sans-serif;
+            overflow-x hidden;
+            font-size 12px;
+            letter-spacing -0.01em;
+            margin 0;
+            padding 0;
+        }
+
+        -webkit-scrollbar {
+            height 3px;
+            width 3px;
+        }
+        -webkit-scrollbar-track {
+            background #FFFFFF;
+        }
+        -webkit-scrollbar-thumb {
+            background #D5D5D5;
+        }
+
+        @keyframes drawLine {
+            0% { stroke-dashoffset 600; opacity 0; }
+            30% { opacity 1; }
+            100% { stroke-dashoffset 0; opacity 1; }
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity 1; pointer-events auto; }
+            70% { opacity 1; pointer-events auto; }
+            100% { opacity 0; pointer-events none; }
+        }
+
+        .svg-line {
+            stroke-dasharray 600;
+            stroke-dashoffset 600;
+            animation drawLine 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+         페이드 아웃 효과를 3.2초 - 4.5초로 늘리고 비선형 타임 슬라이드로 더 느리고 부드럽게 전환 
+        .intro-overlay {
+            animation fadeInOut 4.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        .desaturated-warm-img {
+            filter contrast(95%) brightness(98%) sepia(8%) saturate(68%);
+            transition filter 0.6s ease;
+        }
+
+        .desaturated-warm-imghover {
+            filter contrast(100%) brightness(100%) sepia(0%) saturate(100%);
+        }
+
+        .snap-section {
+            width 100vw;
+            height 100vh;
+            display flex;
+            flex-direction column;
+            justify-content center;
+            align-items center;
+            position relative;
+            box-sizing border-box;
+            background-color #FFFFFF;
+            scroll-snap-align start;
+            scroll-snap-stop always;
+            transition all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        #title-screen {
+            width 100vw;
+            height 100vh;
+            scroll-snap-align start;
+            scroll-snap-stop always;
+            display flex;
+            flex-direction column;
+            justify-content center;
+            align-items center;
+            background-color rgba(255, 255, 255, 0.95);
+            backdrop-filter blur(8px);
+            position relative;
+            cursor pointer;
+            user-select none;
+            transition all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        #projects-list-container {
+            scroll-snap-type y mandatory;
+            overflow-y scroll;
+            height 100vh;
+            width 100vw;
+            scroll-behavior smooth;
+        }
+
+        .admin-editing [data-editable=true] {
+            outline 1px dashed #0284c7;
+            outline-offset 3px;
+            transition all 0.2s ease-in-out;
+            cursor text;
+        }
+        
+        .admin-editing [data-editable=true]hover {
+            background-color rgba(14, 165, 233, 0.06);
+        }
+
+        .admin-editing [data-editable=true]focus {
+            outline 2px solid #0284c7;
+            background-color rgba(14, 165, 233, 0.1);
+        }
+
+        .admin-editing .admin-only {
+            display inline-flex !important;
+        }
+
+        .fade-in {
+            animation fadeIn 0.3s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity 0; transform translateY(-8px); }
+            to { opacity 1; transform translateY(0); }
+        }
+    style
+head
+body class=bg-archBg text-archText antialiased selectionbg-neutral-200
+
+    div id=admin-bar class=hidden fixed top-0 left-0 right-0 z-50 bg-neutral-900 text-white shadow-2xl border-b border-neutral-800 fade-in
+        div class=max-w-7xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs
+            div class=flex items-center gap-3
+                span class=inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-50020 text-emerald-400 border border-emerald-50030
+                    i class=fa-solid fa-user-shield mr-1.5i 관리자 모드
+                span
+                
+                !-- 상단 네비게이션 편집 리모컨 --
+                div class=hidden smflex items-center gap-1.5 bg-neutral-80090 px-3 py-1 rounded border border-neutral-70080
+                    span class=text-[10px] text-emerald-400 font-medium flex items-center gap-1 mr-1i class=fa-solid fa-slidersi 상단 메뉴 리모컨span
+                    button onclick=editHeaderBrand() class=px-2 py-0.5 bg-neutral-700 hoverbg-neutral-600 rounded text-[10px] text-neutral-200 transition로고명button
+                    button onclick=editNavLabel('PROJECTS') class=px-2 py-0.5 bg-neutral-700 hoverbg-neutral-600 rounded text-[10px] text-neutral-200 transitionPROJECTSbutton
+                    button onclick=openAndFocusAboutEdit() class=px-2 py-0.5 bg-emerald-700 hoverbg-emerald-600 text-white rounded text-[10px] font-medium transition flex items-center gap-1
+                        i class=fa-solid fa-pen-to-squarei ABOUT 편집
+                    button
+                    button onclick=openAndFocusContactEdit() class=px-2 py-0.5 bg-emerald-700 hoverbg-emerald-600 text-white rounded text-[10px] font-medium transition flex items-center gap-1
+                        i class=fa-solid fa-pen-to-squarei CONTACT 편집
+                    button
+                div
+            div
+
+            div class=flex items-center gap-2 text-xs
+                button onclick=addNewProject() class=px-3 py-1.5 bg-emerald-600 hoverbg-emerald-500 text-white font-medium rounded transition flex items-center gap-1.5
+                    i class=fa-solid fa-plusi 새 프로젝트 추가
+                button
+                button onclick=togglePreviewMode() id=btn-preview-toggle class=px-3 py-1.5 bg-neutral-800 hoverbg-neutral-700 text-neutral-200 rounded transition border border-neutral-700 flex items-center gap-1.5
+                    i class=fa-solid fa-eyei span id=preview-text미리보기span
+                button
+                button onclick=saveChanges() class=px-3.5 py-1.5 bg-sky-600 hoverbg-sky-500 text-white font-medium rounded transition flex items-center gap-1.5
+                    i class=fa-solid fa-floppy-diski 저장하기
+                button
+                button onclick=openExportModal() class=px-3.5 py-1.5 bg-indigo-600 hoverbg-indigo-500 text-white font-medium rounded transition flex items-center gap-1.5
+                    i class=fa-solid fa-codei GitHub 코드 내보내기
+                button
+                button onclick=logoutAdmin() class=px-3 py-1.5 bg-rose-95060 hoverbg-rose-900 text-rose-300 rounded transition border border-rose-80050 flex items-center gap-1.5
+                    i class=fa-solid fa-right-from-bracketi 로그아웃
+                button
+            div
+        div
+    div
+
+    div id=intro-splash class=intro-overlay fixed inset-0 z-50 bg-white flex flex-col items-center justify-center pointer-events-auto
+        div class=w-48 h-48 relative flex items-center justify-center
+            svg class=w-full h-full viewBox=0 0 200 200 fill=none xmlns=httpwww.w3.org2000svg
+                line x1=20 y1=100 x2=180 y2=100 stroke=#E5E5E5 stroke-width=0.5 stroke-dasharray=2 2 
+                line x1=100 y1=20 x2=100 y2=180 stroke=#E5E5E5 stroke-width=0.5 stroke-dasharray=2 2 
+                path class=svg-line stroke=#111111 stroke-width=1 d=M 40 140 L 40 70 L 110 40 L 160 60 L 160 140 Z style=animation-delay 0.1s; 
+                path class=svg-line stroke=#111111 stroke-width=1 d=M 40 70 L 160 140 M 110 40 L 110 140 style=animation-delay 0.4s; 
+                path class=svg-line stroke=#888888 stroke-width=0.7 stroke-dasharray=4 2 d=M 110 40 L 180 30 L 180 110 L 160 120 style=animation-delay 0.7s; 
+                path class=svg-line stroke=#111111 stroke-width=0.7 d=M 40 140 C 80 170, 140 170, 160 140 style=animation-delay 1.0s; 
+            svg
+        div
+        div class=mt-3 text-center
+            span class=block text-[9px] font-light tracking-[0.3em] text-archText uppercaseIIRO ARCHITECTSspan
+        div
+    div
+
+    header class=fixed top-0 left-0 right-0 z-40 bg-white95 backdrop-blur-sm border-b border-archLightBorder
+        div class=px-8 mdpx-20 lgpx-28 py-4 flex items-center justify-between
+            a href=# id=header-logo-link class=text-[11px] font-normal tracking-[0.2em] text-archText uppercase data-editable=trueIIRO ARCHITECTSa
+            nav class=flex items-center gap-8 text-[10px] font-light tracking-wider text-archMuted
+                a href=#projects-list-container id=nav-btn-projects class=hovertext-archText transition-colors data-editable=truePROJECTSa
+                button id=open-about-btn class=hovertext-archText transition-colors focusoutline-none uppercase data-editable=trueABOUTbutton
+                button id=open-contact-btn class=hovertext-archText transition-colors focusoutline-none uppercase data-editable=trueCONTACTbutton
+            nav
+        div
+    header
+
+    div id=about-modal class=fixed inset-0 z-50 bg-white95 backdrop-blur-md hidden flex flex-col justify-between p-8 mdp-20 lgp-28 transition-opacity duration-300 opacity-0 pointer-events-none
+        div class=flex justify-between items-center border-b border-archLightBorder pb-4
+            div class=flex items-center gap-3
+                span class=text-[10px] font-light tracking-widest text-archMuted uppercase data-editable=trueABOUT IIRO ARCHITECTSspan
+                button onclick=saveModalChanges('ABOUT') class=admin-only hidden px-3 py-1 bg-sky-600 hoverbg-sky-500 text-white rounded text-[10px] font-medium transition flex items-center gap-1 shadow-sm
+                    i class=fa-solid fa-floppy-diski ABOUT 내용 저장
+                button
+            div
+            button id=close-about-btn class=text-xs tracking-widest text-archText uppercase hoveropacity-60 transition-opacity focusoutline-noneCLOSEbutton
+        div
+        div class=max-w-2xl my-auto space-y-6
+            h1 class=text-lg mdtext-xl font-light tracking-tight leading-relaxed text-archText data-editable=true
+                IIRO ARCHITECTS는 공간의 본질과 구축의 절제를 탐구하는 건축사사무소입니다.
+            h1
+            p class=text-[11px] font-light leading-relaxed text-archMuted data-editable=true
+                비움과 채움 사이의 완벽한 균형을 모색하며, 오랫동안 온기를 머금는 장소를 만들어냅니다. 우리는 도면과 재료, 빛과 그림자가 이루는 담백한 조화를 중시합니다. 대지가 가진 장소성과 사용자의 삶이 스며드는 지속 가능한 건축 환경을 제안합니다.
+            p
+        div
+        div class=flex justify-between items-center text-[10px] font-light text-archMuted border-t border-archLightBorder pt-4
+            span data-editable=trueEST. 2020  SEOULspan
+            span data-editable=trueARCHITECTS & URBAN RESEARCHERSspan
+        div
+    div
+
+    !-- CONTACT POPUP MODAL --
+    div id=contact-modal class=fixed inset-0 z-50 bg-white95 backdrop-blur-md hidden flex flex-col justify-between p-8 mdp-16 lgp-24 transition-opacity duration-300 opacity-0 pointer-events-none overflow-y-auto
+        div class=flex justify-between items-center border-b border-archLightBorder pb-4
+            div class=flex items-center gap-3
+                span class=text-[10px] font-light tracking-widest text-archMuted uppercase data-editable=trueCONTACT & ARCHITECT PROFILEspan
+                button onclick=saveModalChanges('CONTACT') class=admin-only hidden px-3 py-1 bg-sky-600 hoverbg-sky-500 text-white rounded text-[10px] font-medium transition flex items-center gap-1 shadow-sm
+                    i class=fa-solid fa-floppy-diski CONTACT 내용 저장
+                button
+            div
+            button id=close-contact-btn class=text-xs tracking-widest text-archText uppercase hoveropacity-60 transition-opacity focusoutline-noneCLOSEbutton
+        div
+        
+        div class=max-w-3xl mx-auto my-auto py-8 w-full flex flex-col mdflex-row items-center gap-8 mdgap-12
+            !-- PORTRAIT  PROFILE IMAGE (34 Ratio Container) --
+            div class=w-40 mdw-52 aspect-[34] flex-shrink-0 bg-neutral-100 rounded border border-neutral-200 overflow-hidden relative group shadow-sm
+                img id=contact-profile-img src=httpsplacehold.co600x800e5e5e5888888text=IIRO+ARCHITECTS alt=Architect Portrait class=w-full h-full object-cover desaturated-warm-img
+                div class=admin-only hidden absolute inset-x-0 bottom-0 p-1.5 bg-neutral-90085 backdrop-blur flex flex-col gap-1 items-center justify-center
+                    label class=cursor-pointer bg-emerald-600 hoverbg-emerald-500 text-white text-[9px] px-2 py-1 rounded w-full text-center transition flex items-center justify-center gap-1
+                        i class=fa-solid fa-uploadi 사진 파일 업로드
+                        input type=file accept=image class=hidden onchange=uploadProfilePhoto(event)
+                    label
+                    button onclick=changeProfilePhoto() class=bg-neutral-800 hoverbg-neutral-700 text-neutral-200 text-[9px] px-2 py-1 rounded w-full text-center transition flex items-center justify-center gap-1 border border-neutral-700
+                        i class=fa-solid fa-linki URL 입력
+                    button
+                div
+            div
+
+            !-- CONTACT DETAILS & INFO --
+            div class=space-y-6 flex-grow text-left
+                div
+                    h2 class=text-sm mdtext-base font-normal tracking-wide text-archText data-editable=true이일호  대표 건축사 (Principal Architect)h2
+                    p class=text-[10px] font-light text-archMuted tracking-wider mt-0.5 data-editable=trueKIRA Registered Architect  KOREAp
+                div
+
+                div class=border-t border-archLightBorder pt-4 space-y-3 text-[11px] font-light text-archText
+                    div class=flex items-start gap-4
+                        span class=text-[9px] text-archMuted uppercase tracking-widest w-16 pt-0.5PHONEspan
+                        span data-editable=true+82 (0)2 123 4567  +82 (0)10 9876 5432span
+                    div
+                    div class=flex items-start gap-4
+                        span class=text-[9px] text-archMuted uppercase tracking-widest w-16 pt-0.5EMAILspan
+                        span data-editable=truecontact@iiro.kr  architect@iiro.krspan
+                    div
+                    div class=flex items-start gap-4
+                        span class=text-[9px] text-archMuted uppercase tracking-widest w-16 pt-0.5OFFICEspan
+                        span data-editable=true서울특별시 종로구 자하문로 12길 34 (서촌) IIRO ARCHITECTSspan
+                    div
+                    div class=flex items-start gap-4
+                        span class=text-[9px] text-archMuted uppercase tracking-widest w-16 pt-0.5HOURSspan
+                        span data-editable=trueMON - FRI  0930 - 1830 (SAT  SUN  HOLIDAY OFF)span
+                    div
+                div
+            div
+        div
+
+        div class=flex justify-between items-center text-[10px] font-light text-archMuted border-t border-archLightBorder pt-4
+            span data-editable=trueIIRO ARCHITECTSspan
+            span data-editable=trueWORK WITH US & INQUIRIESspan
+        div
+    div
+
+    main id=main-content class=pt-16
+        div id=projects-list-container
+            !-- TITLE SCREEN --
+            section id=title-screen onclick=scrollToFirstProject()
+                div class=text-center space-y-8 px-4
+                    h1 class=text-sm mdtext-base font-light tracking-[0.25em] text-neutral-800 uppercase data-editable=true contenteditable=false id=title-screen-text onblur=updateTitleScreenText(this.innerText)
+                        신뢰할 수 있는 건축 경험을 제공해드립니다.
+                    h1
+                    div class=flex justify-center pt-2
+                        div class=w-7 h-7 rounded-full border border-neutral-300 flex items-center justify-center animate-bounce
+                            div class=w-1.5 h-1.5 rounded-full bg-neutral-400div
+                        div
+                    div
+                div
+            section
+        div
+
+        div id=admin-add-project-bar class=hidden my-12 text-center
+            button onclick=addNewProject() class=px-6 py-3 bg-neutral-900 hoverbg-black text-white text-xs tracking-wider uppercase font-medium rounded-lg shadow-md transition-all border border-neutral-700 inline-flex items-center gap-2
+                i class=fa-solid fa-square-plus text-sm text-emerald-400i 새로운 프로젝트 추가하기
+            button
+        div
+    main
+
+    footer id=contact class=py-20 border-t border-archLightBorder text-center bg-white space-y-4
+        div class=text-[10px] font-light tracking-widest text-archMuted space-y-1
+            p data-editable=trueIIRO ARCHITECTSp
+            p data-editable=trueCONTACT@IIRO.KR  +82 (0)2 123 4567p
+            p data-editable=true class=text-[9px] pt-2© 2026 IIRO ARCHITECTS. ALL RIGHTS RESERVED.p
+        div
+        div class=flex items-center justify-center gap-4
+            button onclick=handleAdminClick() class=text-[9px] font-mono text-neutral-300 hovertext-neutral-600 transition-colors tracking-widest uppercase focusoutline-none
+                ADMIN
+            button
+            button id=footer-change-pass-btn onclick=promptChangePassword() class=hidden text-[9px] font-mono text-amber-600 hovertext-amber-800 transition-colors tracking-widest uppercase focusoutline-none
+                 비밀번호 바꾸기
+            button
+        div
+    footer
+
+    div id=export-modal class=fixed inset-0 z-50 bg-black70 backdrop-blur-sm hidden flex items-center justify-center p-4
+        div class=bg-white p-6 mdp-8 rounded-xl max-w-2xl w-full shadow-2xl border border-neutral-200 flex flex-col max-h-[85vh]
+            div class=flex justify-between items-center mb-4
+                h3 class=text-xs font-semibold tracking-wider text-neutral-800 uppercase flex items-center gap-2
+                    i class=fa-solid fa-code text-indigo-600i GitHub Pages  웹용 HTML 내보내기
+                h3
+                button onclick=closeExportModal() class=text-neutral-400 hovertext-neutral-700 text-sm✕button
+            div
+            p class=text-[11px] text-neutral-600 mb-3수정된 전체 소스코드입니다. 아래 코드를 복사하여 index.html에 덮어쓰거나 저장하세요.p
+            textarea id=export-code-area class=w-full flex-grow p-3 text-[10px] font-mono bg-neutral-900 text-emerald-400 rounded border border-neutral-700 focusoutline-none resize-none mb-4 readonlytextarea
+            div class=flex justify-end gap-2
+                button onclick=copyExportCode() class=px-4 py-2 bg-indigo-600 hoverbg-indigo-500 text-white font-medium text-xs rounded transition flex items-center gap-1.5
+                    i class=fa-solid fa-copyi 코드 복사하기
+                button
+                button onclick=closeExportModal() class=px-4 py-2 bg-neutral-200 hoverbg-neutral-300 text-neutral-800 font-medium text-xs rounded transition
+                    닫기
+                button
+            div
+        div
+    div
+
+    script
+        let projectsData = [
+            {
+                id 'proj-1',
+                year '2026',
+                title '서촌 유율재 (維律齋)',
+                images [
+                    'httpsimages.unsplash.comphoto-1600585154340-be6161a56a0cq=80&w=1600&auto=format&fit=crop',
+                    'httpsimages.unsplash.comphoto-1513694203232-719a280e022fq=80&w=1200&auto=format&fit=crop',
+                    'httpsimages.unsplash.comphoto-1600566753190-17f0baa2a6c3q=80&w=1600&auto=format&fit=crop',
+                    'httpsimages.unsplash.comphoto-1545324418-cc1a3fa10c00q=80&w=1200&auto=format&fit=crop'
+                ]
+            },
+            {
+                id 'proj-2',
+                year '2025',
+                title '양평 정조 파빌리온',
+                images [
+                    'httpsimages.unsplash.comphoto-1506158669146-619067262a00q=80&w=1200&auto=format&fit=crop',
+                    'httpsimages.unsplash.comphoto-1512917774080-9991f1c4c750q=80&w=1600&auto=format&fit=crop',
+                    'httpsimages.unsplash.comphoto-1505691938895-1758d7feb511q=80&w=1200&auto=format&fit=crop',
+                    'httpsimages.unsplash.comphoto-1600585154363-67eb9e2e2099q=80&w=1600&auto=format&fit=crop'
+                ]
+            },
+            {
+                id 'proj-3',
+                year '2024',
+                title '평창 공간 연구소',
+                images [
+                    'httpsimages.unsplash.comphoto-1600585154340-be6161a56a0cq=80&w=1600&auto=format&fit=crop'
+                ]
+            }
+        ];
+
+        function saveModalChanges(modalName) {
+            if (modalName === 'CONTACT') {
+                const img = document.getElementById('contact-profile-img');
+                if (img) {
+                    localStorage.setItem('iiro_contact_img', img.src);
+                }
+            }
+            alert(`${modalName} 내용이 성공적으로 저장되었습니다!`);
+        }
+
+        let currentAdminPassword = localStorage.getItem('iiro_admin_pass')  '1234';
+        let titleScreenMessage = localStorage.getItem('iiro_title_text')  '신뢰할 수 있는 건축 경험을 제공해드립니다.';
+        let isAdmin = false;
+        let isPreviewMode = false;
+        const projectIndices = {};
+        const scrollLocks = {};
+
+        function renderProjects() {
+            const container = document.getElementById('projects-list-container');
+            const titleScreen = document.getElementById('title-screen');
+            
+            container.innerHTML = '';
+            if (titleScreen) {
+                const titleTextEl = titleScreen.querySelector('#title-screen-text');
+                if (titleTextEl) {
+                    titleTextEl.innerText = titleScreenMessage;
+                    const isEditing = isAdmin && !isPreviewMode;
+                    titleTextEl.setAttribute('contenteditable', isEditing  'true'  'false');
+                }
+                container.appendChild(titleScreen);
+            }
+
+            projectsData.forEach((project) = {
+                if (projectIndices[project.id] === undefined) {
+                    projectIndices[project.id] = 0;
+                }
+
+                const projectSection = document.createElement('article');
+                projectSection.className = 'snap-section space-y-4';
+                projectSection.setAttribute('data-project-id', project.id);
+
+                const isEditing = isAdmin && !isPreviewMode;
+
+                projectSection.innerHTML = `
+                    div class=w-full ${isEditing  'lgw-[85%]'  'lgw-12'} mx-auto px-4 flex flex-wrap items-baseline justify-between gap-2 transition-all duration-300
+                        div class=flex items-baseline gap-3
+                            span class=text-[9px] font-light text-archMuted data-editable=true onblur=updateProjectMeta('${project.id}', 'year', this.innerText)${project.year}span
+                            h2 class=text-[11px] font-light tracking-tight text-archText font-medium data-editable=true onblur=updateProjectMeta('${project.id}', 'title', this.innerText)${project.title}h2
+                        div
+                        div class=flex items-center gap-3
+                            div class=flex items-center gap-2
+                                button onclick=navigateCarousel('${project.id}', -1) class=text-archMuted hovertext-archText transition-colors text-[10px] px-1 focusoutline-none aria-label=Previous Image&lt;button
+                                span class=text-[9px] font-light text-archMuted tracking-wider gallery-counter id=counter-${project.id}${String((projectIndices[project.id]  0) + 1).padStart(2, '0')}  ${String(project.images.length).padStart(2, '0')}span
+                                button onclick=navigateCarousel('${project.id}', 1) class=text-archMuted hovertext-archText transition-colors text-[10px] px-1 focusoutline-none aria-label=Next Image&gt;button
+                            div
+                            button onclick=deleteProject('${project.id}') class=admin-only ${isEditing  'inline-flex'  'hidden'} px-2 py-0.5 bg-rose-60010 hoverbg-rose-600 text-rose-600 hovertext-white rounded text-[10px] transition border border-rose-200
+                                i class=fa-solid fa-trash mr-1i 프로젝트 삭제
+                            button
+                        div
+                    div
+
+                    div class=w-full ${isEditing  'lgw-[85%]'  'lgw-12'} mx-auto px-4 flex flex-col ${isEditing  'lgflex-row'  ''} gap-6 items-center justify-center transition-all duration-300
+                        
+                        !-- 12 PHOTO CAROUSEL AREA (Fixed Height Container, Auto Width Display) --
+                        div class=w-full ${isEditing  'lgw-12'  'w-full'} flex-1 relative group overflow-hidden rounded
+                            div class=carousel-container overflow-x-auto overflow-y-hidden w-full relative select-none rounded border border-archLightBorder bg-neutral-50 flex items-center scrollbar-none id=carousel-${project.id}
+                                div class=carousel-track flex items-center transition-transform duration-500 ease-out gap-4 h-[50vh] mdh-[55vh] py-3 px-4 id=track-${project.id}
+                                    ${project.images.map((imgUrl, imgIdx) = `
+                                        div class=carousel-slide flex-none h-full relative snap-center flex items-center justify-center overflow-hidden rounded bg-transparent
+                                            !-- 높이 기준(h-full), 가로폭은 자동(w-auto)으로 세로가로 비율 보존 및 다음 사진이 자연스럽게 보이도록 배치 --
+                                            img src=${imgUrl} alt=${project.title} class=h-full w-auto object-cover desaturated-warm-img pointer-events-none rounded shadow-sm onerror=this.src='httpsplacehold.co1200x800f5f5f5111111text=IIRO+ARCH'
+                                        div
+                                    `).join('')}
+                                div
+                            div
+                        div
+
+                        !-- RIGHT SIDE ADMIN IMAGE MANAGEMENT LIST (Visible in edit mode) --
+                        div class=admin-only ${isEditing  'flex'  'hidden'} w-full lgw-12 h-[50vh] mdh-[55vh] flex-col bg-neutral-900 text-neutral-200 p-4 rounded-lg shadow-xl border border-neutral-800 space-y-3
+                            div class=flex items-center justify-between border-b border-neutral-800 pb-2
+                                span class=text-[11px] font-semibold text-emerald-400 flex items-center gap-1.5
+                                    i class=fa-solid fa-list-checki 이미지 목록 & 관리 (${project.images.length})
+                                span
+                                div class=flex items-center gap-1.5
+                                    label class=cursor-pointer px-2.5 py-1 bg-emerald-600 hoverbg-emerald-500 text-white rounded text-[10px] transition inline-flex items-center gap-1
+                                        i class=fa-solid fa-uploadi 업로드
+                                        input type=file accept=image class=hidden onchange=uploadProjectImage(event, '${project.id}')
+                                    label
+                                    button onclick=promptAddImageUrl('${project.id}') class=px-2.5 py-1 bg-neutral-800 hoverbg-neutral-700 text-neutral-200 rounded text-[10px] transition border border-neutral-700 inline-flex items-center gap-1
+                                        i class=fa-solid fa-linki URL
+                                    button
+                                div
+                            div
+
+                            !-- IMAGE ITEMS LIST --
+                            div class=flex-grow overflow-y-auto space-y-2 pr-1
+                                ${project.images.map((imgUrl, imgIdx) = `
+                                    div class=flex items-center justify-between p-2 rounded bg-neutral-80080 hoverbg-neutral-800 border border-neutral-70060 transition gap-2
+                                        div class=flex items-center gap-2.5 overflow-hidden
+                                            span class=text-[10px] font-mono text-neutral-400 w-4${imgIdx + 1}.span
+                                            img src=${imgUrl} class=w-10 h-10 object-cover rounded border border-neutral-700 flex-shrink-0 onerror=this.src='httpsplacehold.co100f5f5f5111111text=IMG'
+                                            span class=text-[10px] font-mono text-neutral-300 truncate max-w-[120px] mdmax-w-[180px]${imgUrl}span
+                                        div
+                                        div class=flex items-center gap-1 flex-shrink-0
+                                            button onclick=moveImage('${project.id}', ${imgIdx}, -1) ${imgIdx === 0  'disabled'  ''} class=px-2 py-1 bg-neutral-700 hoverbg-neutral-600 disabledopacity-30 rounded text-[10px] title=위로 이동&uarr;button
+                                            button onclick=moveImage('${project.id}', ${imgIdx}, 1) ${imgIdx === project.images.length - 1  'disabled'  ''} class=px-2 py-1 bg-neutral-700 hoverbg-neutral-600 disabledopacity-30 rounded text-[10px] title=아래로 이동&darr;button
+                                            button onclick=removeImage('${project.id}', ${imgIdx}) class=px-2 py-1 bg-rose-90060 hoverbg-rose-800 text-rose-300 rounded text-[10px] ml-1 title=삭제i class=fa-solid fa-trash-canibutton
+                                        div
+                                    div
+                                `).join('')}
+                            div
+                        div
+
+                    div
+                `;
+                container.appendChild(projectSection);
+
+                 Wheel interaction for carousel
+                const carouselEl = document.getElementById(`carousel-${project.id}`);
+                if (carouselEl) {
+                    carouselEl.addEventListener('wheel', function(e) {
+                        e.preventDefault();
+                        if (scrollLocks[project.id]) return;
+
+                        const direction = e.deltaY  0  1  -1;
+                        const currentIdx = projectIndices[project.id]  0;
+                        const maxIdx = project.images.length - 1;
+
+                        if (direction  0) {
+                            if (currentIdx  maxIdx) {
+                                projectIndices[project.id] = currentIdx + 1;
+                                updateCarouselView(project.id);
+                                scrollLocks[project.id] = true;
+                                setTimeout(() = { scrollLocks[project.id] = false; }, 400);
+                            } else {
+                                const nextSection = projectSection.nextElementSibling;
+                                if (nextSection && nextSection.classList.contains('snap-section')) {
+                                    scrollLocks[project.id] = true;
+                                    nextSection.scrollIntoView({ behavior 'smooth' });
+                                    setTimeout(() = { scrollLocks[project.id] = false; }, 800);
+                                }
+                            }
+                        } else {
+                            if (currentIdx  0) {
+                                projectIndices[project.id] = currentIdx - 1;
+                                updateCarouselView(project.id);
+                                scrollLocks[project.id] = true;
+                                setTimeout(() = { scrollLocks[project.id] = false; }, 400);
+                            } else {
+                                const prevSection = projectSection.previousElementSibling;
+                                if (prevSection) {
+                                    scrollLocks[project.id] = true;
+                                    prevSection.scrollIntoView({ behavior 'smooth' });
+                                    setTimeout(() = { scrollLocks[project.id] = false; }, 800);
+                                }
+                            }
+                        }
+                    }, { passive false });
+                }
+            });
+
+            if (isAdmin && !isPreviewMode) {
+                document.body.classList.add('admin-editing');
+            } else {
+                document.body.classList.remove('admin-editing');
+            }
+
+            const isEditing = isAdmin && !isPreviewMode;
+            document.querySelectorAll('[data-editable=true]').forEach(el = {
+                el.setAttribute('contenteditable', isEditing  'true'  'false');
+            });
+        }
+
+        function navigateCarousel(projectId, direction) {
+            const project = projectsData.find(p = p.id === projectId);
+            if (!project  project.images.length === 0) return;
+
+            if (projectIndices[projectId] === undefined) {
+                projectIndices[projectId] = 0;
+            }
+
+            const currentIndex = projectIndices[projectId];
+            const newIndex = currentIndex + direction;
+
+            if (newIndex = project.images.length  newIndex  0) {
+                return;
+            }
+
+            projectIndices[projectId] = newIndex;
+            updateCarouselView(projectId);
+        }
+
+        function updateCarouselView(projectId) {
+            const project = projectsData.find(p = p.id === projectId);
+            if (!project) return;
+            const idx = projectIndices[projectId]  0;
+
+            const track = document.getElementById(`track-${projectId}`);
+            if (track) {
+                const slides = track.querySelectorAll('.carousel-slide');
+                if (slides[idx]) {
+                    slides[idx].scrollIntoView({ behavior 'smooth', block 'nearest', inline 'center' });
+                }
+            }
+
+            const counter = document.getElementById(`counter-${projectId}`);
+            if (counter) {
+                counter.innerText = `${String(idx + 1).padStart(2, '0')}  ${String(project.images.length).padStart(2, '0')}`;
+            }
+        }
+
+        function moveImage(projectId, index, delta) {
+            const project = projectsData.find(p = p.id === projectId);
+            if (!project) return;
+
+            const newIndex = index + delta;
+            if (newIndex  0  newIndex = project.images.length) return;
+
+            const temp = project.images[index];
+            project.images[index] = project.images[newIndex];
+            project.images[newIndex] = temp;
+
+            renderProjects();
+        }
+
+        function removeImage(projectId, index) {
+            const project = projectsData.find(p = p.id === projectId);
+            if (!project) return;
+
+            if (project.images.length = 1) {
+                alert('최소 1개 이상의 이미지가 필요합니다.');
+                return;
+            }
+
+            project.images.splice(index, 1);
+            if (projectIndices[projectId] = project.images.length) {
+                projectIndices[projectId] = project.images.length - 1;
+            }
+            renderProjects();
+        }
+
+        function uploadProjectImage(event, projectId) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const project = projectsData.find(p = p.id === projectId);
+                if (project) {
+                    project.images.push(e.target.result);
+                    renderProjects();
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function promptAddImageUrl(projectId) {
+            const url = prompt('추가할 이미지의 인터넷 URL을 입력하세요');
+            if (url && url.trim() !== '') {
+                const project = projectsData.find(p = p.id === projectId);
+                if (project) {
+                    project.images.push(url.trim());
+                    renderProjects();
+                }
+            }
+        }
+
+        function updateProjectMeta(projectId, field, value) {
+            const project = projectsData.find(p = p.id === projectId);
+            if (project) {
+                project[field] = value.trim();
+            }
+        }
+
+        function updateTitleScreenText(value) {
+            titleScreenMessage = value.trim();
+            localStorage.setItem('iiro_title_text', titleScreenMessage);
+        }
+
+        function addNewProject() {
+            const newId = 'proj-' + Date.now();
+            projectsData.push({
+                id newId,
+                year new Date().getFullYear().toString(),
+                title '신규 프로젝트 제목',
+                images [
+                    'httpsimages.unsplash.comphoto-1600585154340-be6161a56a0cq=80&w=1600&auto=format&fit=crop'
+                ]
+            });
+            renderProjects();
+            setTimeout(() = {
+                const el = document.querySelector(`[data-project-id=${newId}]`);
+                if (el) el.scrollIntoView({ behavior 'smooth' });
+            }, 100);
+        }
+
+        function deleteProject(projectId) {
+            if (confirm('이 프로젝트를 삭제하시겠습니까')) {
+                projectsData = projectsData.filter(p = p.id !== projectId);
+                renderProjects();
+            }
+        }
+
+        function handleAdminClick() {
+            if (isAdmin) {
+                logoutAdmin();
+                return;
+            }
+
+            const inputPass = prompt('관리자 비밀번호를 입력하세요');
+            if (inputPass === null) return;
+
+            if (inputPass === currentAdminPassword) {
+                isAdmin = true;
+                document.getElementById('admin-bar').classList.remove('hidden');
+                document.getElementById('admin-add-project-bar').classList.remove('hidden');
+                document.getElementById('footer-change-pass-btn').classList.remove('hidden');
+                renderProjects();
+                alert('성공적으로 관리자 로그인되었습니다.');
+            } else {
+                alert('비밀번호가 올바르지 않습니다.');
+            }
+        }
+
+        function promptChangePassword() {
+            if (!isAdmin) return;
+
+            const currPass = prompt('현재 비밀번호를 입력하세요');
+            if (currPass === null) return;
+
+            if (currPass !== currentAdminPassword) {
+                alert('현재 비밀번호가 일치하지 않습니다.');
+                return;
+            }
+
+            const newPass = prompt('새로운 비밀번호를 입력하세요');
+            if (!newPass  newPass.trim() === '') {
+                alert('올바른 비밀번호를 입력해주세요.');
+                return;
+            }
+
+            currentAdminPassword = newPass.trim();
+            localStorage.setItem('iiro_admin_pass', currentAdminPassword);
+            alert('비밀번호가 성공적으로 변경되었습니다!');
+        }
+
+        function scrollToFirstProject() {
+            const container = document.getElementById('projects-list-container');
+            const firstProject = container.querySelector('.snap-sectionnot(#title-screen)');
+            if (firstProject) {
+                firstProject.scrollIntoView({ behavior 'smooth' });
+            }
+        }
+
+        function openAndFocusAboutEdit() {
+            const aboutModal = document.getElementById('about-modal');
+            if (aboutModal) {
+                aboutModal.classList.remove('hidden', 'pointer-events-none', 'opacity-0');
+                aboutModal.classList.add('opacity-100');
+                
+                setTimeout(() = {
+                    const firstEditable = aboutModal.querySelector('[data-editable=true]');
+                    if (firstEditable) {
+                        firstEditable.focus();
+                    }
+                }, 300);
+            }
+        }
+
+        function openAndFocusContactEdit() {
+            const contactModal = document.getElementById('contact-modal');
+            if (contactModal) {
+                contactModal.classList.remove('hidden', 'pointer-events-none', 'opacity-0');
+                contactModal.classList.add('opacity-100');
+                
+                setTimeout(() = {
+                    const firstEditable = contactModal.querySelector('[data-editable=true]');
+                    if (firstEditable) {
+                        firstEditable.focus();
+                    }
+                }, 300);
+            }
+        }
+
+        function editHeaderBrand() {
+            const logoEl = document.getElementById('header-logo-link');
+            if (!logoEl) return;
+            const newName = prompt('상단 브랜드로고명을 입력하세요', logoEl.innerText.trim());
+            if (newName && newName.trim() !== '') {
+                logoEl.innerText = newName.trim();
+            }
+        }
+
+        function editNavLabel(targetMenu) {
+            let targetEl = null;
+            if (targetMenu === 'PROJECTS') targetEl = document.getElementById('nav-btn-projects');
+            if (targetMenu === 'ABOUT') targetEl = document.getElementById('open-about-btn');
+            if (targetMenu === 'CONTACT') targetEl = document.getElementById('open-contact-btn');
+
+            if (targetEl) {
+                const newLabel = prompt(`'${targetMenu}' 메뉴의 변경할 이름을 입력하세요`, targetEl.innerText.trim());
+                if (newLabel && newLabel.trim() !== '') {
+                    targetEl.innerText = newLabel.trim();
+                }
+            }
+        }
+
+        function togglePreviewMode() {
+            isPreviewMode = !isPreviewMode;
+            const btnText = document.getElementById('preview-text');
+            if (isPreviewMode) {
+                btnText.innerText = '수정모드로 돌아가기';
+            } else {
+                btnText.innerText = '미리보기';
+            }
+            renderProjects();
+        }
+
+        function saveChanges() {
+            try {
+                localStorage.setItem('iiro_projects_data', JSON.stringify(projectsData));
+                localStorage.setItem('iiro_title_text', titleScreenMessage);
+                
+                const profileImg = document.getElementById('contact-profile-img');
+                if (profileImg) {
+                    localStorage.setItem('iiro_contact_img', profileImg.src);
+                }
+                
+                alert('변경 사항이 성공적으로 저장되었습니다!');
+            } catch (e) {
+                alert('저장 중 오류가 발생했습니다 ' + e.message);
+            }
+        }
+
+        function logoutAdmin() {
+            isAdmin = false;
+            isPreviewMode = false;
+            
+            document.getElementById('admin-bar').classList.add('hidden');
+            document.getElementById('admin-add-project-bar').classList.add('hidden');
+            document.getElementById('footer-change-pass-btn').classList.add('hidden');
+            
+            renderProjects();
+            alert('로그아웃 되었습니다.');
+        }
+
+        const titleScreen = document.getElementById('title-screen');
+        if (titleScreen) {
+            titleScreen.addEventListener('click', (e) = {
+                if (isAdmin && !isPreviewMode) {
+                    if (e.target.id === 'title-screen-text') {
+                        e.stopPropagation();
+                    }
+                }
+            });
+        }
+
+        window.onload = function() {
+             저장된 프로젝트 데이터 로드
+            const savedProjects = localStorage.getItem('iiro_projects_data');
+            if (savedProjects) {
+                try {
+                    projectsData = JSON.parse(savedProjects);
+                } catch (e) {
+                    console.error('Failed to load saved projects', e);
+                }
+            }
+
+            const savedContactImg = localStorage.getItem('iiro_contact_img');
+            const img = document.getElementById('contact-profile-img');
+            if (savedContactImg) {
+                if (img) img.src = savedContactImg;
+            } else if (img) {
+                img.src = 'httpsplacehold.co600x800e5e5e5888888text=IIRO+ARCHITECTS';
+            }
+
+            renderProjects();
+
+             About modal handlers
+            const openAboutBtn = document.getElementById('open-about-btn');
+            const closeAboutBtn = document.getElementById('close-about-btn');
+            const aboutModal = document.getElementById('about-modal');
+
+            if (openAboutBtn && aboutModal) {
+                openAboutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    aboutModal.classList.remove('hidden', 'pointer-events-none', 'opacity-0');
+                    aboutModal.classList.add('opacity-100');
+                });
+            }
+
+            if (closeAboutBtn && aboutModal) {
+                closeAboutBtn.addEventListener('click', function() {
+                    aboutModal.classList.remove('opacity-100');
+                    aboutModal.classList.add('opacity-0', 'pointer-events-none');
+                    setTimeout(() = {
+                        aboutModal.classList.add('hidden');
+                    }, 300);
+                });
+            }
+
+             Contact modal handlers
+            const openContactBtn = document.getElementById('open-contact-btn');
+            const closeContactBtn = document.getElementById('close-contact-btn');
+            const contactModal = document.getElementById('contact-modal');
+
+            if (openContactBtn && contactModal) {
+                openContactBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    contactModal.classList.remove('hidden', 'pointer-events-none', 'opacity-0');
+                    contactModal.classList.add('opacity-100');
+                });
+            }
+
+            if (closeContactBtn && closeContactBtn) {
+                closeContactBtn.addEventListener('click', function() {
+                    contactModal.classList.remove('opacity-100');
+                    contactModal.classList.add('opacity-0', 'pointer-events-none');
+                    setTimeout(() = {
+                        contactModal.classList.add('hidden');
+                    }, 300);
+                });
+            }
+        };
+
+        function changeProfilePhoto() {
+            const url = prompt('새 프로필 사진 인터넷 URL을 입력하거나 이미지 주소를 붙여넣으세요');
+            if (url && url.trim() !== '') {
+                const img = document.getElementById('contact-profile-img');
+                if (img) {
+                    img.src = url.trim();
+                    localStorage.setItem('iiro_contact_img', url.trim());
+                }
+            }
+        }
+
+        function uploadProfilePhoto(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById('contact-profile-img');
+                if (img) {
+                    img.src = e.target.result;
+                    localStorage.setItem('iiro_contact_img', e.target.result);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    script
+body
+html
