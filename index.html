@@ -228,7 +228,12 @@
 
     <div id="about-modal" class="fixed inset-0 z-50 bg-white/95 backdrop-blur-md hidden flex flex-col justify-between p-8 md:p-20 lg:p-28 transition-opacity duration-300 opacity-0 pointer-events-none">
         <div class="flex justify-between items-center border-b border-archLightBorder pb-4">
-            <span class="text-[10px] font-light tracking-widest text-archMuted uppercase" data-editable="true">ABOUT IIRO ARCHITECTS</span>
+            <div class="flex items-center gap-3">
+                <span class="text-[10px] font-light tracking-widest text-archMuted uppercase" data-editable="true">ABOUT IIRO ARCHITECTS</span>
+                <button onclick="saveModalChanges('ABOUT')" class="admin-only hidden px-3 py-1 bg-sky-600 hover:bg-sky-500 text-white rounded text-[10px] font-medium transition flex items-center gap-1 shadow-sm">
+                    <i class="fa-solid fa-floppy-disk"></i> ABOUT 내용 저장
+                </button>
+            </div>
             <button id="close-about-btn" class="text-xs tracking-widest text-archText uppercase hover:opacity-60 transition-opacity focus:outline-none">CLOSE</button>
         </div>
         <div class="max-w-2xl my-auto space-y-6">
@@ -248,7 +253,12 @@
     <!-- CONTACT POPUP MODAL -->
     <div id="contact-modal" class="fixed inset-0 z-50 bg-white/95 backdrop-blur-md hidden flex flex-col justify-between p-8 md:p-16 lg:p-24 transition-opacity duration-300 opacity-0 pointer-events-none overflow-y-auto">
         <div class="flex justify-between items-center border-b border-archLightBorder pb-4">
-            <span class="text-[10px] font-light tracking-widest text-archMuted uppercase" data-editable="true">CONTACT & ARCHITECT PROFILE</span>
+            <div class="flex items-center gap-3">
+                <span class="text-[10px] font-light tracking-widest text-archMuted uppercase" data-editable="true">CONTACT & ARCHITECT PROFILE</span>
+                <button onclick="saveModalChanges('CONTACT')" class="admin-only hidden px-3 py-1 bg-sky-600 hover:bg-sky-500 text-white rounded text-[10px] font-medium transition flex items-center gap-1 shadow-sm">
+                    <i class="fa-solid fa-floppy-disk"></i> CONTACT 내용 저장
+                </button>
+            </div>
             <button id="close-contact-btn" class="text-xs tracking-widest text-archText uppercase hover:opacity-60 transition-opacity focus:outline-none">CLOSE</button>
         </div>
         
@@ -388,26 +398,24 @@
             },
             {
                 id: 'proj-3',
-                year: '2025',
-                title: '평창 클라우드 빌라',
-                images: [
-                    'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=1600&auto=format&fit=crop',
-                    'https://images.unsplash.com/photo-1512915922686-57c11dde9b6b?q=80&w=1200&auto=format&fit=crop',
-                    'https://images.unsplash.com/photo-1600585152220-90363fe7e115?q=80&w=1600&auto=format&fit=crop',
-                    'https://images.unsplash.com/photo-1600566752355-35792bedcfea?q=80&w=1200&auto=format&fit=crop'
-                ]
-            },
-            {
-                id: 'proj-4',
                 year: '2024',
-                title: '성수동 붉은벽돌 문화공간',
+                title: '평창 공간 연구소',
                 images: [
-                    'https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=1200&auto=format&fit=crop',
-                    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600&auto=format&fit=crop',
-                    'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?q=80&w=1600&auto=format&fit=crop'
+                    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600&auto=format&fit=crop'
                 ]
             }
         ];
+
+        function saveModalChanges(modalName) {
+            if (modalName === 'CONTACT') {
+                const img = document.getElementById('contact-profile-img');
+                if (img) {
+                    localStorage.setItem('iiro_contact_img', img.src);
+                }
+            }
+            alert(`${modalName} 내용이 성공적으로 저장되었습니다!`);
+        }
+
         let currentAdminPassword = localStorage.getItem('iiro_admin_pass') || '1234';
         let titleScreenMessage = localStorage.getItem('iiro_title_text') || '신뢰할 수 있는 건축 경험을 제공해드립니다.';
         let isAdmin = false;
@@ -885,7 +893,10 @@
             const url = prompt('새 프로필 사진 인터넷 URL을 입력하거나 이미지 주소를 붙여넣으세요:');
             if (url && url.trim() !== '') {
                 const img = document.getElementById('contact-profile-img');
-                if (img) img.src = url.trim();
+                if (img) {
+                    img.src = url.trim();
+                    localStorage.setItem('iiro_contact_img', url.trim());
+                }
             }
         }
 
@@ -898,6 +909,7 @@
                 const img = document.getElementById('contact-profile-img');
                 if (img) {
                     img.src = e.target.result;
+                    localStorage.setItem('iiro_contact_img', e.target.result);
                 }
             };
             reader.readAsDataURL(file);
